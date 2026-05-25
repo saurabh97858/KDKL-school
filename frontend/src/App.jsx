@@ -28,12 +28,14 @@ import ChangePassword from './pages/dashboards/ChangePassword';
 import StudentFees from './pages/dashboards/StudentFees';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTopTrigger from './components/ScrollToTopTrigger';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <ScrollToTopTrigger />
+        <Chatbot />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

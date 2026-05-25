@@ -23,4 +23,8 @@ router.get('/moments', getMoments);
 router.get('/fee-structure', getFeeStructure);
 router.post('/gallery-upload', protect, authorize('principal'), upload.single('galleryImage'), uploadGalleryPhoto);
 
+// Chatbot Route
+const { getChatbotResponse } = require('../controllers/chatController');
+router.post('/chat', getChatbotResponse);
+
 module.exports = router;

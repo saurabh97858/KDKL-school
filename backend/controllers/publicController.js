@@ -9,9 +9,32 @@ const Topper = require('../models/Topper');
 const Moment = require('../models/Moment');
 const FeeStructure = require('../models/FeeStructure');
 
+// Import Notifier utility
+const { sendEmail, sendSMS } = require('../utils/notifier');
+
 const applyForAdmission = async (req, res) => {
     try {
         const application = await AdmissionApplication.create(req.body);
+
+        // Send Email & SMS notifications asynchronously
+        const { studentName, className, emailId, mobileNumber, contactNumber } = req.body;
+        
+        // 1. Send confirmation email to parent/student if email is provided
+        if (emailId) {
+            const subject = 'Application Received - KDKL Shastri Inter College & KPS';
+            const text = `Dear Parent/Student,\n\nWe have successfully received the admission application for ${studentName} applying for Class ${className}.\nOur administrative team will review the details and contact you shortly at ${mobileNumber || contactNumber}.\n\nRegards,\nAdmissions Team\nKDKL Shastri Inter College & Kavita Public School`;
+            
+            // Dispatch asynchronously (don't block the HTTP response)
+            sendEmail(emailId, subject, text).catch(err => console.error('Failed to send admission email:', err));
+        }
+
+        // 2. Send SMS notification logs
+        const smsPhone = mobileNumber || contactNumber;
+        if (smsPhone) {
+            const smsText = `Dear Parent, we have received your admission application for ${studentName} (Class ${className}) at KDKL School. We will contact you soon.`;
+            sendSMS(smsPhone, smsText).catch(err => console.error('Failed to send admission SMS:', err));
+        }
+
         res.status(201).json({ message: 'Application submitted successfully', application });
     } catch (error) {
         res.status(500).json({ message: error.message });

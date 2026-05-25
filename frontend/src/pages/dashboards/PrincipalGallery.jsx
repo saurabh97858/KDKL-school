@@ -86,38 +86,42 @@ const PrincipalGallery = () => {
                 <motion.div 
                     layout
                     className="glass-card" 
-                    style={{ padding: '2.5rem', marginBottom: '3rem', background: 'rgba(255, 255, 255, 0.8)' }}
+                    style={{ padding: '1.5rem', marginBottom: '2rem', background: 'var(--glass)' }}
                 >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                            <Camera size={24} color="#1a2a6c" />
-                            <h3 style={{ fontSize: '1.4rem', color: '#1a2a6c', margin: 0 }}>{editingId ? 'Refine Moment' : 'Capture New Moment'}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                            <Camera size={20} color="var(--primary)" />
+                            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary)', margin: 0 }}>{editingId ? 'Refine Moment' : 'Capture New Moment'}</h3>
                         </div>
                         {editingId && (
-                            <button onClick={() => {setEditingId(null); setTitle(''); setFile(null);}} className="btn btn-secondary">
+                            <button onClick={() => {setEditingId(null); setTitle(''); setFile(null);}} className="btn btn-secondary" style={{ padding: '0.4rem 1rem' }}>
                                 Cancel Edit
                             </button>
                         )}
                     </div>
                     
-                    <form onSubmit={handleUpload} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignItems: 'end' }}>
+                    <form onSubmit={handleUpload} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.2rem', alignItems: 'end' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '700', color: '#475569', marginBottom: '0.5rem' }}>Image Caption</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Image Caption</label>
                             <input type="text" placeholder="e.g. Annual Sports Day 2026" value={title} onChange={(e) => setTitle(e.target.value)} required className="form-input" style={{ width: '100%' }} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '700', color: '#475569', marginBottom: '0.5rem' }}>Display Category</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Display Category</label>
                             <select value={category} onChange={(e) => setCategory(e.target.value)} className="form-input" style={{ width: '100%' }}>
                                 <option value="Slider">Home Page Slider</option>
                                 <option value="Environment">Campus Environment</option>
                                 <option value="Functions">Events & Functions</option>
                             </select>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '700', color: '#475569', marginBottom: '0.5rem' }}>Select Image</label>
-                            <input type="file" onChange={(e) => setFile(e.target.files[0])} required={!editingId} style={{ fontSize: '0.8rem' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)' }}>Select Image</label>
+                            <label htmlFor="gallery-file-upload" className="btn btn-secondary" style={{ display: 'inline-flex', gap: '0.5rem', cursor: 'pointer', padding: '0.55rem 1rem', width: '100%', justifyContent: 'center', margin: 0, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                <Upload size={16} />
+                                {file ? file.name : 'Choose Photo'}
+                                <input id="gallery-file-upload" type="file" onChange={(e) => setFile(e.target.files[0])} required={!editingId} style={{ display: 'none' }} accept="image/*" />
+                            </label>
                         </div>
-                        <button type="submit" className="btn btn-primary" style={{ height: '48px', fontWeight: '800' }}>
+                        <button type="submit" className="btn btn-primary" style={{ height: '36px', width: '100%', fontWeight: '800' }}>
                             {editingId ? 'Update Moment' : 'Upload to Cloud'}
                         </button>
                     </form>

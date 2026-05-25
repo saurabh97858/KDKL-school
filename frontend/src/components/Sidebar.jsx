@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Users, UserPlus, BookOpen, Image as ImageIcon, LogOut, FileText, Bell, Lock, Settings, CreditCard, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, BookOpen, Image as ImageIcon, LogOut, FileText, Bell, Lock, Settings, CreditCard, Menu, X, Sun, Moon } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
     const { logout } = useContext(AuthContext);
@@ -10,6 +10,21 @@ const Sidebar = ({ role }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(window.innerWidth > 1024);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+    const [isDark, setIsDark] = useState(() => {
+        const stored = localStorage.getItem('theme');
+        if (stored) return stored === 'dark';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
+
+    useEffect(() => {
+        if (isDark) {
+            document.body.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDark]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -44,36 +59,36 @@ const Sidebar = ({ role }) => {
     };
 
     const principalLinks = [
-        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/principal-dashboard' },
-        { name: 'Teachers', icon: <Users size={20} />, path: '/principal/teachers' },
-        { name: 'Add Student', icon: <UserPlus size={20} />, path: '/principal/add-student' },
-        { name: 'Fee Management', icon: <CreditCard size={20} />, path: '/principal/fees' },
-        { name: 'Admissions', icon: <FileText size={20} />, path: '/principal/applications' },
-        { name: 'Gallery', icon: <ImageIcon size={20} />, path: '/principal/gallery' },
-        { name: 'Moments', icon: <ImageIcon size={20} />, path: '/principal/moments' },
-        { name: 'Toppers', icon: <Users size={20} />, path: '/principal/toppers' },
-        { name: 'Fee Details', icon: <CreditCard size={20} />, path: '/principal/fee-structure' },
-        { name: 'Founder Info', icon: <Users size={20} />, path: '/principal/founder' },
-        { name: 'Notifications', icon: <Bell size={20} />, path: '/principal/notifications' },
-        { name: 'School Settings', icon: <Settings size={20} />, path: '/principal/settings' },
+        { name: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/principal-dashboard' },
+        { name: 'Teachers', icon: <Users size={18} />, path: '/principal/teachers' },
+        { name: 'Add Student', icon: <UserPlus size={18} />, path: '/principal/add-student' },
+        { name: 'Fee Management', icon: <CreditCard size={18} />, path: '/principal/fees' },
+        { name: 'Admissions', icon: <FileText size={18} />, path: '/principal/applications' },
+        { name: 'Gallery', icon: <ImageIcon size={18} />, path: '/principal/gallery' },
+        { name: 'Moments', icon: <ImageIcon size={18} />, path: '/principal/moments' },
+        { name: 'Toppers', icon: <Users size={18} />, path: '/principal/toppers' },
+        { name: 'Fee Details', icon: <CreditCard size={18} />, path: '/principal/fee-structure' },
+        { name: 'Founder Info', icon: <Users size={18} />, path: '/principal/founder' },
+        { name: 'Notifications', icon: <Bell size={18} />, path: '/principal/notifications' },
+        { name: 'School Settings', icon: <Settings size={18} />, path: '/principal/settings' },
     ];
 
     const teacherLinks = [
-        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/teacher-dashboard' },
-        { name: 'Attendance', icon: <BookOpen size={20} />, path: '/teacher/attendance' },
-        { name: 'Results', icon: <FileText size={20} />, path: '/teacher/results' },
-        { name: 'Leaves', icon: <FileText size={20} />, path: '/teacher/leaves' },
+        { name: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/teacher-dashboard' },
+        { name: 'Attendance', icon: <BookOpen size={18} />, path: '/teacher/attendance' },
+        { name: 'Results', icon: <FileText size={18} />, path: '/teacher/results' },
+        { name: 'Leaves', icon: <FileText size={18} />, path: '/teacher/leaves' },
     ];
 
     const studentLinks = [
-        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/student-dashboard' },
-        { name: 'My Fees', icon: <CreditCard size={20} />, path: '/student/fees' },
-        { name: 'Results', icon: <FileText size={20} />, path: '/student/results' },
-        { name: 'Leaves', icon: <FileText size={20} />, path: '/student/leaves' },
+        { name: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/student-dashboard' },
+        { name: 'My Fees', icon: <CreditCard size={18} />, path: '/student/fees' },
+        { name: 'Results', icon: <FileText size={18} />, path: '/student/results' },
+        { name: 'Leaves', icon: <FileText size={18} />, path: '/student/leaves' },
     ];
 
     const commonLinks = [
-        { name: 'Change Password', icon: <Lock size={20} />, path: '/settings/password' },
+        { name: 'Change Password', icon: <Lock size={18} />, path: '/settings/password' },
     ];
 
     const getLinks = () => {
@@ -91,15 +106,16 @@ const Sidebar = ({ role }) => {
                 onClick={() => setIsOpen(!isOpen)}
                 className="sidebar-toggle-btn"
                 style={{
-                    position: 'fixed', top: '15px', left: '15px', zIndex: 1100,
-                    background: '#1a2a6c', color: 'white', border: 'none',
-                    borderRadius: '8px', padding: '10px', display: 'flex',
+                    position: 'fixed', top: '12px', left: '12px', zIndex: 1100,
+                    background: 'var(--primary)', color: 'white', border: 'none',
+                    borderRadius: '6px', padding: '8px', display: 'flex',
                     alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    cursor: 'pointer'
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
+                    cursor: 'pointer',
+                    transition: 'background 0.3s ease'
                 }}
             >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
             {/* Mobile Overlay */}
@@ -112,8 +128,8 @@ const Sidebar = ({ role }) => {
                         onClick={() => setIsOpen(false)}
                         style={{
                             position: 'fixed', inset: 0, 
-                            background: 'rgba(0,0,0,0.5)', zIndex: 1000,
-                            backdropFilter: 'blur(4px)'
+                            background: 'rgba(0,0,0,0.4)', zIndex: 1000,
+                            backdropFilter: 'blur(3px)'
                         }}
                     />
                 )}
@@ -126,47 +142,68 @@ const Sidebar = ({ role }) => {
                 className="sidebar"
                 style={{ 
                     position: 'fixed',
-                    background: 'linear-gradient(180deg, #1a2a6c 0%, #111827 100%)',
-                    boxShadow: '4px 0 20px rgba(0,0,0,0.2)',
+                    background: 'var(--card-bg)',
+                    borderRight: '1px solid var(--border-color)',
+                    boxShadow: '4px 0 20px rgba(0,0,0,0.05)',
                     zIndex: 1050,
                     height: '100vh',
                     width: '260px',
                     left: 0, top: 0,
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
+                    transition: 'background 0.3s ease, border-color 0.3s ease'
                 }}
             >
                 <div className="sidebar-header" style={{ 
-                    borderBottom: '1px solid rgba(255,255,255,0.1)', 
-                    padding: '2rem 1rem 1rem', 
-                    marginBottom: '1rem', 
-                    marginTop: '2.5rem' 
+                    borderBottom: '1px solid var(--border-color)', 
+                    padding: '1.2rem 1rem 0.8rem', 
+                    marginBottom: '0.6rem', 
+                    marginTop: '2.8rem',
+                    transition: 'border-color 0.3s ease',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '0.5rem'
                 }}>
-                    <h2 style={{ fontSize: '1.2rem', letterSpacing: '2px', fontWeight: '800', color: '#fff' }}>KDKL PORTAL</h2>
+                    <h2 style={{ fontSize: '1.05rem', letterSpacing: '2px', fontWeight: '800', color: 'var(--primary)', margin: 0, transition: 'color 0.3s ease' }}>KDKL PORTAL</h2>
+                    <button 
+                        onClick={() => setIsDark(!isDark)}
+                        title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                        style={{
+                            background: 'var(--bg-light)',
+                            border: '1px solid var(--border-color)',
+                            color: 'var(--primary)',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                            padding: 0,
+                            transition: 'all 0.3s ease',
+                            flexShrink: 0
+                        }}
+                    >
+                        {isDark ? <Sun size={14} /> : <Moon size={14} />}
+                    </button>
                 </div>
 
                 <ul className="sidebar-menu" style={{ 
                     flexGrow: 1, 
                     overflowY: 'auto', 
-                    padding: '0 1rem 2rem',
+                    padding: '0 0.8rem 1.5rem',
                     scrollbarWidth: 'none', // For Firefox
                     msOverflowStyle: 'none' // For Internet Explorer
                 }}>
                     {getLinks().map((link, idx) => {
                         const isActive = location.pathname === link.path;
                         return (
-                            <motion.li key={idx} whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
+                            <motion.li key={idx} whileTap={{ scale: 0.98 }} style={{ listStyle: 'none', marginBottom: '0.3rem' }}>
                                 <Link 
                                     to={link.path} 
-                                    className={isActive ? 'active-link' : ''}
-                                    style={{ 
-                                        backgroundColor: isActive ? 'rgba(253, 187, 45, 0.2)' : 'transparent',
-                                        color: isActive ? '#fdbb2d' : 'rgba(255,255,255,0.7)',
-                                        fontWeight: isActive ? '700' : '400',
-                                        borderLeft: isActive ? '4px solid #fdbb2d' : 'none',
-                                        display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.8rem 1rem',
-                                        textDecoration: 'none', borderRadius: '8px', transition: 'all 0.3s'
-                                    }}
+                                    className={`sidebar-link ${isActive ? 'active-link' : ''}`}
                                 >
                                     {link.icon}
                                     <span>{link.name}</span>
@@ -175,16 +212,14 @@ const Sidebar = ({ role }) => {
                         );
                     })}
                     <motion.li 
-                        whileHover={{ x: 5 }}
                         onClick={handleLogout} 
-                        className="logout-btn"
+                        className="sidebar-link logout-btn-sidebar"
                         style={{ 
-                            marginTop: '2rem', color: '#ef4444',
-                            display: 'flex', alignItems: 'center', gap: '1rem',
-                            padding: '0.8rem 1rem', cursor: 'pointer'
+                            marginTop: '1.2rem',
+                            listStyle: 'none'
                         }}
                     >
-                        <LogOut size={20} />
+                        <LogOut size={18} />
                         <span>Logout</span>
                     </motion.li>
                 </ul>

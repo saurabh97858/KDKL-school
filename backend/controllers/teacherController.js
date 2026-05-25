@@ -4,6 +4,9 @@ const Result = require('../models/Result');
 const LeaveRequest = require('../models/LeaveRequest');
 const User = require('../models/User');
 
+// Import notifier utilities
+const { sendEmail, sendSMS } = require('../utils/notifier');
+
 // Get Students of assigned class
 const getClassStudents = async (req, res) => {
     const { className } = req.params;
@@ -79,12 +82,27 @@ const uploadResult = async (req, res) => {
 const manageLeave = async (req, res) => {
     const { leaveId, status, teacherComment } = req.body;
     try {
-        const leave = await LeaveRequest.findById(leaveId);
+        const leave = await LeaveRequest.findById(leaveId).populate('student');
         if (!leave) return res.status(404).json({ message: 'Leave request not found' });
 
         leave.status = status;
         leave.teacherComment = teacherComment;
         await leave.save();
+
+        // Send email notification to student/parent asynchronously
+        if (leave.student && leave.student.emailId) {
+            const subject = `Leave Request Status Update - KDKL School`;
+            const text = `Dear Parent/Student,\n\nThe leave request for ${leave.student.studentName} (Class ${leave.student.className}) starting from ${new Date(leave.startDate).toLocaleDateString()} to ${new Date(leave.endDate).toLocaleDateString()} has been reviewed.\n\nStatus: ${status}\nTeacher Comment: ${teacherComment || 'None'}\n\nRegards,\nClass Teacher\nKDKL School`;
+            
+            sendEmail(leave.student.emailId, subject, text).catch(e => console.error('Failed to send leave status email:', e.message));
+        }
+
+        // Send SMS log
+        const smsPhone = leave.student?.mobileNumber || leave.student?.contactNumber;
+        if (smsPhone) {
+            const smsText = `Dear Parent, the leave request for ${leave.student.studentName} has been ${status}. Teacher Comment: ${teacherComment || 'None'}. KDKL School.`;
+            sendSMS(smsPhone, smsText).catch(e => console.error('Failed to send leave status SMS:', e.message));
+        }
 
         res.json({ message: `Leave request ${status}`, leave });
     } catch (error) {

@@ -48,14 +48,14 @@ const Admission = () => {
     };
 
     return (
-        <div className="premium-light-page">
+        <div className="premium-light-page" style={{ backgroundColor: 'var(--bg-home)', transition: 'background-color 0.3s ease, color 0.3s ease' }}>
             <Navbar />
             
             {/* Aesthetic Background Blobs */}
             <div className="bg-blob blob-1"></div>
             <div className="bg-blob blob-2"></div>
             <div className="bg-blob blob-3"></div>
-
+ 
             <div className="admission-wrapper">
                 {/* Left Side: Legacy & Values */}
                 <motion.div 
@@ -72,21 +72,21 @@ const Admission = () => {
                     
                     <motion.div variants={fadeInUp} className="value-props">
                         <div className="value-prop-item">
-                            <div className="value-icon"><Trophy size={20} color="#b21f1f"/></div>
+                            <div className="value-icon"><Trophy size={20} color="var(--secondary)"/></div>
                             <div className="value-text">
                                 <h3 className="text-navy">Outstanding Academics</h3>
                                 <p className="text-gray">Consistently achieving top-tier board results for decades.</p>
                             </div>
                         </div>
                         <div className="value-prop-item">
-                            <div className="value-icon"><Users size={20} color="#b21f1f"/></div>
+                            <div className="value-icon"><Users size={20} color="var(--secondary)"/></div>
                             <div className="value-text">
                                 <h3 className="text-navy">Holistic Development</h3>
                                 <p className="text-gray">Focus on character, sports, and leadership skills.</p>
                             </div>
                         </div>
                         <div className="value-prop-item">
-                            <div className="value-icon"><BookOpen size={20} color="#b21f1f"/></div>
+                            <div className="value-icon"><BookOpen size={20} color="var(--secondary)"/></div>
                             <div className="value-text">
                                 <h3 className="text-navy">Modern Facilities</h3>
                                 <p className="text-gray">State-of-the-art labs, libraries, and smart classrooms.</p>
@@ -94,7 +94,7 @@ const Admission = () => {
                         </div>
                     </motion.div>
                 </motion.div>
-
+ 
                 {/* Right Side: Glassmorphic Application Form */}
                 <motion.div 
                     className="admission-form-side"
@@ -102,7 +102,7 @@ const Admission = () => {
                 >
                     <div className="light-glass-heavy form-container">
                         <div className="form-header">
-                            <div className="form-header-icon"><GraduationCap size={28} color="#1a2a6c"/></div>
+                            <div className="form-header-icon"><GraduationCap size={22} color="var(--primary)"/></div>
                             <h2 className="text-navy">Online Application</h2>
                             <p className="text-gray">Fill out the form below to begin the enrollment process.</p>
                         </div>
@@ -122,75 +122,77 @@ const Admission = () => {
                         </AnimatePresence>
 
                         <form onSubmit={handleSubmit} className="premium-form">
-                            <div className="input-group">
-                                <label>Student Full Name *</label>
-                                <input type="text" name="studentName" required onChange={handleChange} value={formData.studentName} className="glass-input light" />
-                            </div>
-                            
-                            <div className="form-row">
+                            <div className="form-fields-scrollable">
                                 <div className="input-group">
-                                    <label>WhatsApp Number *</label>
-                                    <input type="text" name="mobileNumber" required onChange={handleChange} value={formData.mobileNumber} className="glass-input light" />
+                                    <label>Student Full Name *</label>
+                                    <input type="text" name="studentName" required onChange={handleChange} value={formData.studentName} className="glass-input light" />
                                 </div>
-                                <div className="input-group">
-                                    <label>Class Applying For *</label>
-                                    <input type="text" name="className" placeholder="e.g. 5th, 10th" required onChange={handleChange} value={formData.className} className="glass-input light" />
+                                
+                                <div className="form-row">
+                                    <div className="input-group">
+                                        <label>WhatsApp Number *</label>
+                                        <input type="text" name="mobileNumber" required onChange={handleChange} value={formData.mobileNumber} className="glass-input light" />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Class Applying For *</label>
+                                        <input type="text" name="className" placeholder="e.g. 5th, 10th" required onChange={handleChange} value={formData.className} className="glass-input light" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="form-row">
-                                <div className="input-group">
-                                    <label>Parent's Contact *</label>
-                                    <input type="text" name="contactNumber" required onChange={handleChange} value={formData.contactNumber} className="glass-input light" />
+                                <div className="form-row">
+                                    <div className="input-group">
+                                        <label>Parent's Contact *</label>
+                                        <input type="text" name="contactNumber" required onChange={handleChange} value={formData.contactNumber} className="glass-input light" />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="emailId" onChange={handleChange} value={formData.emailId} className="glass-input light" />
+                                    </div>
                                 </div>
-                                <div className="input-group">
-                                    <label>Email Address</label>
-                                    <input type="email" name="emailId" onChange={handleChange} value={formData.emailId} className="glass-input light" />
-                                </div>
-                            </div>
 
-                            <div className="form-row">
-                                <div className="input-group">
-                                    <label>Medium *</label>
-                                    <select name="medium" required onChange={handleChange} value={formData.medium} className="glass-input light">
-                                        <option value="Hindi">Hindi Medium</option>
-                                        <option value="English">English Medium</option>
-                                    </select>
+                                <div className="form-row">
+                                    <div className="input-group">
+                                        <label>Medium *</label>
+                                        <select name="medium" required onChange={handleChange} value={formData.medium} className="glass-input light">
+                                            <option value="Hindi">Hindi Medium</option>
+                                            <option value="English">English Medium</option>
+                                        </select>
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Stream (For Class 11th/12th)</label>
+                                        <select name="stream" onChange={handleChange} value={formData.stream} className="glass-input light">
+                                            <option value="None">None</option>
+                                            <option value="Science">Science</option>
+                                            <option value="Commerce">Commerce</option>
+                                            <option value="Arts">Arts</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="input-group">
-                                    <label>Stream (For Class 11th/12th)</label>
-                                    <select name="stream" onChange={handleChange} value={formData.stream} className="glass-input light">
-                                        <option value="None">None</option>
-                                        <option value="Science">Science</option>
-                                        <option value="Commerce">Commerce</option>
-                                        <option value="Arts">Arts</option>
-                                    </select>
+                                
+                                <div className="form-row">
+                                    <div className="input-group">
+                                        <label>Father's Name *</label>
+                                        <input type="text" name="fatherName" required onChange={handleChange} value={formData.fatherName} className="glass-input light" />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Mother's Name *</label>
+                                        <input type="text" name="motherName" required onChange={handleChange} value={formData.motherName} className="glass-input light" />
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div className="form-row">
-                                <div className="input-group">
-                                    <label>Father's Name *</label>
-                                    <input type="text" name="fatherName" required onChange={handleChange} value={formData.fatherName} className="glass-input light" />
-                                </div>
-                                <div className="input-group">
-                                    <label>Mother's Name *</label>
-                                    <input type="text" name="motherName" required onChange={handleChange} value={formData.motherName} className="glass-input light" />
-                                </div>
-                            </div>
 
-                            <div className="input-group">
-                                <label>Previous School (If any)</label>
-                                <input type="text" name="previousSchool" onChange={handleChange} value={formData.previousSchool} className="glass-input light" />
-                            </div>
-                            
-                            <div className="input-group full-width">
-                                <label>Current Address *</label>
-                                <textarea name="currentAddress" rows="2" required onChange={handleChange} value={formData.currentAddress} className="glass-input light"></textarea>
-                            </div>
-                            <div className="input-group full-width">
-                                <label>Permanent Address *</label>
-                                <textarea name="permanentAddress" rows="2" required onChange={handleChange} value={formData.permanentAddress} className="glass-input light"></textarea>
+                                <div className="input-group">
+                                    <label>Previous School (If any)</label>
+                                    <input type="text" name="previousSchool" onChange={handleChange} value={formData.previousSchool} className="glass-input light" />
+                                </div>
+                                
+                                <div className="input-group full-width">
+                                    <label>Current Address *</label>
+                                    <textarea name="currentAddress" rows="2" required onChange={handleChange} value={formData.currentAddress} className="glass-input light"></textarea>
+                                </div>
+                                <div className="input-group full-width">
+                                    <label>Permanent Address *</label>
+                                    <textarea name="permanentAddress" rows="2" required onChange={handleChange} value={formData.permanentAddress} className="glass-input light"></textarea>
+                                </div>
                             </div>
 
                             <button type="submit" disabled={isSubmitting} className={`submit-btn-premium nav-gradient ${isSubmitting ? 'submitting' : ''}`}>
@@ -205,13 +207,14 @@ const Admission = () => {
 
             <style>{`
                 .premium-light-page {
-                    background-color: #fdf6b2;
+                    background-color: var(--bg-home);
                     min-height: 100vh;
                     font-family: 'Inter', system-ui, sans-serif;
                     position: relative;
                     overflow: hidden;
                     display: flex;
                     flex-direction: column;
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
 
                 /* Aesthetic Light Blobs */
@@ -234,101 +237,123 @@ const Admission = () => {
 
                 /* Light Glassmorphism */
                 .light-glass-heavy {
-                    background: rgba(255, 255, 255, 0.85);
+                    background: var(--glass);
                     backdrop-filter: blur(20px);
                     -webkit-backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255, 255, 255, 0.9);
+                    border: 1px solid var(--glass-border);
                     box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
                     border-radius: 28px;
                 }
 
                 /* Typography */
-                .text-navy { color: #1a2a6c; }
-                .text-crimson { color: #b21f1f; }
-                .text-slate { color: #475569; }
-                .text-gray { color: #64748b; }
+                .text-navy { color: var(--primary); }
+                .text-crimson { color: var(--secondary); }
+                .text-slate { color: var(--text-secondary); }
+                .text-gray { color: var(--text-secondary); }
                 
                 /* Layout */
                 .admission-wrapper {
                     flex: 1;
                     max-width: 1100px;
-                    margin: 0 auto 1.5rem;
-                    padding: 0.5rem 5%;
+                    margin: 0 auto 1rem;
+                    padding: 0.2rem 5%;
                     display: grid;
                     grid-template-columns: 1fr 1.2fr;
-                    gap: 3rem;
+                    gap: 2rem;
                     align-items: flex-start;
                     position: relative;
                     z-index: 10;
                 }
                 
                 /* Left Side - Info */
-                .admission-info-side { padding-top: 1rem; }
-                .section-kicker { margin: 0 0 0.5rem 0; color: #b21f1f; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
-                .main-title { font-size: 2.8rem; font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin: 0 0 1rem 0; }
-                .divider-line { height: 4px; width: 60px; margin-bottom: 1.5rem; border-radius: 2px; background: #b21f1f; }
-                .info-description { font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem; }
+                .admission-info-side { padding-top: 0.5rem; }
+                .section-kicker { margin: 0 0 0.3rem 0; color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; }
+                .main-title { font-size: 2.1rem; font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin: 0 0 0.6rem 0; }
+                .divider-line { height: 4px; width: 50px; margin-bottom: 1rem; border-radius: 2px; background: var(--secondary); }
+                .info-description { font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.2rem; }
                 
-                .value-props { display: flex; flex-direction: column; gap: 1.5rem; }
-                .value-prop-item { display: flex; gap: 1rem; align-items: flex-start; }
-                .value-icon { background: #ffe4e6; padding: 0.8rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-                .value-text h3 { margin: 0 0 0.2rem 0; font-size: 1.1rem; font-weight: 700; color: #0f172a; }
-                .value-text p { margin: 0; font-size: 0.9rem; line-height: 1.4; }
+                .value-props { display: flex; flex-direction: column; gap: 1rem; }
+                .value-prop-item { display: flex; gap: 0.8rem; align-items: flex-start; }
+                .value-icon { background: rgba(178, 31, 31, 0.12); padding: 0.6rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+                .value-text h3 { margin: 0 0 0.2rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+                .value-text p { margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--text-secondary); }
 
                 /* Right Side - Form */
-                .form-container { padding: 1.5rem 2rem; }
-                .form-header { text-align: center; margin-bottom: 1rem; }
+                .form-container { padding: 1.2rem 1.5rem; }
+                .form-header { text-align: center; margin-bottom: 0.8rem; }
                 .form-header-icon {
-                    width: 50px; height: 50px; background: #e0e7ff; margin: 0 auto 0.8rem;
+                    width: 40px; height: 40px; background: var(--bg-light); margin: 0 auto 0.4rem;
                     border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                    border: 1px solid var(--border-color);
                 }
-                .form-header h2 { margin: 0 0 0.3rem 0; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
-                .form-header p { margin: 0; font-size: 0.85rem; }
+                .form-header h2 { margin: 0 0 0.2rem 0; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+                .form-header p { margin: 0; font-size: 0.8rem; }
 
                 .status-message {
-                    padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;
-                    font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+                    padding: 0.6rem 0.8rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;
+                    font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
                 }
                 .success-status { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
                 .error-status { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
                 /* Premium Input Styling */
-                .premium-form { display: flex; flex-direction: column; gap: 0.8rem; }
-                .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-                .input-group { display: flex; flex-direction: column; gap: 0.3rem; }
+                .premium-form { display: flex; flex-direction: column; gap: 0.6rem; }
+                .form-fields-scrollable {
+                    max-height: 330px;
+                    overflow-y: auto;
+                    padding-right: 0.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.65rem;
+                }
+                .form-fields-scrollable::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .form-fields-scrollable::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .form-fields-scrollable::-webkit-scrollbar-thumb {
+                    background: var(--border-color);
+                    border-radius: 10px;
+                }
+                .form-fields-scrollable::-webkit-scrollbar-thumb:hover {
+                    background: var(--primary);
+                }
+                .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+                .input-group { display: flex; flex-direction: column; gap: 0.2rem; }
                 .full-width { grid-column: 1 / -1; }
                 
-                .input-group label { font-size: 0.75rem; font-weight: 600; color: #475569; padding-left: 0.2rem; }
+                .input-group label { font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); padding-left: 0.2rem; }
                 
                 .glass-input.light {
-                    padding: 0.6rem 1rem;
-                    background: rgba(255, 255, 255, 0.6);
-                    border: 1px solid rgba(203, 213, 225, 0.6);
+                    padding: 0.5rem 0.8rem;
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
                     border-radius: 8px;
-                    font-size: 0.85rem;
-                    color: #0f172a;
+                    font-size: 0.8rem;
+                    color: var(--text-primary);
                     font-family: 'Inter', sans-serif;
                     transition: all 0.3s ease;
                     box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
                 }
                 .glass-input.light:focus {
                     outline: none;
-                    background: #ffffff;
-                    border-color: #1a2a6c;
+                    background: var(--card-bg);
+                    border-color: var(--primary);
                     box-shadow: 0 0 0 4px rgba(26, 42, 108, 0.15);
                 }
-                .glass-input.light::placeholder { color: #94a3b8; }
-                textarea.glass-input { resize: vertical; min-height: 80px; }
+                .glass-input.light::placeholder { color: var(--text-secondary); }
+                textarea.glass-input { resize: vertical; min-height: 60px; }
 
                 /* Action Button */
                 .submit-btn-premium {
-                    margin-top: 1rem;
+                    margin-top: 0.6rem;
                     background: linear-gradient(135deg, #1a2a6c 0%, #3b5998 100%);
                     color: white;
                     border: none;
-                    padding: 1.2rem;
+                    padding: 0.85rem;
                     border-radius: 12px;
-                    font-size: 1.1rem;
+                    font-size: 0.95rem;
                     font-weight: 700;
                     letter-spacing: 0.5px;
                     cursor: pointer;
@@ -336,8 +361,8 @@ const Admission = () => {
                     box-shadow: 0 8px 20px rgba(26, 42, 108, 0.25);
                 }
                 .submit-btn-premium:hover:not(:disabled) {
-                    transform: translateY(-3px);
-                    box-shadow: 0 15px 30px rgba(26, 42, 108, 0.35);
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 25px rgba(26, 42, 108, 0.35);
                 }
                 .submit-btn-premium:disabled { opacity: 0.7; cursor: not-allowed; }
 

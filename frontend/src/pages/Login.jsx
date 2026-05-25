@@ -176,58 +176,58 @@ const Login = () => {
                     display: grid;
                     grid-template-columns: 1.2fr auto 1fr;
                     gap: 0;
-                    max-width: 820px;
+                    max-width: 740px;
                     width: 100%;
                     align-items: center;
                     background: rgba(255, 255, 255, 0.75);
                     backdrop-filter: blur(28px);
                     -webkit-backdrop-filter: blur(28px);
-                    padding: 1.2rem 2.5rem;
-                    border-radius: 24px;
-                    box-shadow: 0 25px 70px rgba(26, 42, 108, 0.1), 0 0 0 1px rgba(255,255,255,0.8);
+                    padding: 1rem 1.8rem;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 50px rgba(26, 42, 108, 0.08), 0 0 0 1px rgba(255,255,255,0.8);
                 }
 
                 /* === LEFT QUOTE SECTION === */
-                .quote-section { padding: 1rem 2rem 1rem 1rem; }
+                .quote-section { padding: 0.5rem 1rem 0.5rem 0; }
 
                 .school-badge {
                     display: inline-block;
                     background: linear-gradient(135deg, #1a2a6c, #2563eb);
                     color: white;
-                    padding: 0.4rem 1rem;
+                    padding: 0.3rem 0.8rem;
                     border-radius: 50px;
-                    font-size: 0.85rem;
+                    font-size: 0.75rem;
                     font-weight: 700;
-                    letter-spacing: 1px;
-                    margin-bottom: 1.2rem;
+                    letter-spacing: 0.8px;
+                    margin-bottom: 0.8rem;
                 }
 
                 .quote-heading {
                     color: #b21f1f;
-                    font-size: 1.8rem; /* Reduced from 2.2rem */
+                    font-size: 1.45rem;
                     font-weight: 800;
                     line-height: 1.2;
-                    letter-spacing: -0.5px;
-                    margin-bottom: 1rem;
+                    letter-spacing: -0.4px;
+                    margin-bottom: 0.8rem;
                 }
 
                 .gita-quote {
-                    border-left: 4px solid #b21f1f;
-                    padding-left: 1.2rem;
+                    border-left: 3px solid #b21f1f;
+                    padding-left: 1rem;
                     margin: 0;
                     color: #1a2a6c;
                     font-style: italic;
-                    line-height: 1.7;
+                    line-height: 1.6;
                 }
 
                 .shlok {
-                    font-size: 1.05rem;
+                    font-size: 0.95rem;
                     font-weight: 600;
                     color: #1a2a6c;
                 }
 
                 .translation {
-                    font-size: 1rem;
+                    font-size: 0.88rem;
                     color: #475569;
                 }
 
@@ -235,8 +235,8 @@ const Login = () => {
                     text-align: right;
                     font-weight: 600;
                     color: #94a3b8;
-                    margin-top: 1rem;
-                    font-size: 0.95rem;
+                    margin-top: 0.6rem;
+                    font-size: 0.82rem;
                 }
 
                 /* === DIVIDER === */
@@ -244,51 +244,51 @@ const Login = () => {
                     width: 1px;
                     align-self: stretch;
                     background: linear-gradient(to bottom, transparent, rgba(26,42,108,0.15), transparent);
-                    margin: 0 2rem;
+                    margin: 0 1.2rem;
                 }
 
                 /* === RIGHT LOGIN SECTION === */
-                .login-form-section { padding: 1rem 1rem 1rem 2rem; }
+                .login-form-section { padding: 0.5rem 0 0.5rem 1rem; }
 
                 .login-icon-wrapper {
-                    width: 60px;
-                    height: 60px;
+                    width: 48px;
+                    height: 48px;
                     border-radius: 50%;
                     background: linear-gradient(135deg, #1a2a6c, #2563eb);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    margin: 0 auto 1.2rem;
-                    box-shadow: 0 8px 20px rgba(26,42,108,0.25);
+                    margin: 0 auto 0.8rem;
+                    box-shadow: 0 6px 15px rgba(26,42,108,0.2);
                 }
 
                 .login-title {
                     text-align: center;
                     color: #1a2a6c;
-                    font-size: 1.6rem; /* Reduced from 1.8rem */
+                    font-size: 1.4rem;
                     font-weight: 800;
-                    margin-bottom: 0.3rem;
+                    margin-bottom: 0.2rem;
                 }
 
                 .login-subtitle {
                     text-align: center;
                     color: #94a3b8;
-                    font-size: 0.9rem;
-                    margin-bottom: 1.5rem;
+                    font-size: 0.82rem;
+                    margin-bottom: 1.2rem;
                 }
 
                 .login-error {
                     background: #fee2e2;
                     color: #991b1b;
-                    padding: 0.7rem 1rem;
-                    border-radius: 10px;
+                    padding: 0.5rem 0.8rem;
+                    border-radius: 8px;
                     font-weight: 600;
-                    font-size: 0.9rem;
-                    margin-bottom: 1rem;
+                    font-size: 0.85rem;
+                    margin-bottom: 0.8rem;
                     text-align: center;
                 }
 
-                .login-form { display: flex; flex-direction: column; gap: 1rem; }
+                .login-form { display: flex; flex-direction: column; gap: 0.8rem; }
 
                 .input-group {
                     position: relative;
@@ -298,19 +298,19 @@ const Login = () => {
 
                 .input-icon {
                     position: absolute;
-                    left: 14px;
-                    font-size: 1rem;
+                    left: 12px;
+                    font-size: 0.9rem;
                     z-index: 1;
                     pointer-events: none;
                 }
 
                 .login-input {
                     width: 100%;
-                    padding: 0.9rem 0.9rem 0.9rem 2.8rem;
-                    border-radius: 12px;
-                    border: 1.5px solid #e2e8f0;
-                    font-size: 1rem;
-                    background-color: rgba(255,255,255,0.8);
+                    padding: 0.7rem 0.7rem 0.7rem 2.4rem;
+                    border-radius: 10px;
+                    border: 1.5px solid #cbd5e1;
+                    font-size: 0.9rem;
+                    background-color: rgba(255,255,255,0.85);
                     color: #0f172a;
                     transition: all 0.3s ease;
                     font-family: 'Inter', sans-serif;
@@ -320,14 +320,14 @@ const Login = () => {
                     outline: none;
                     border-color: #1a2a6c;
                     background-color: #ffffff;
-                    box-shadow: 0 0 0 4px rgba(26,42,108,0.08);
+                    box-shadow: 0 0 0 3px rgba(26,42,108,0.08);
                 }
 
                 .login-btn {
-                    margin-top: 0.4rem;
-                    padding: 1rem;
-                    border-radius: 12px;
-                    font-size: 1.05rem;
+                    margin-top: 0.2rem;
+                    padding: 0.75rem;
+                    border-radius: 10px;
+                    font-size: 0.95rem;
                     font-weight: 700;
                     background: linear-gradient(135deg, #1a2a6c, #2563eb);
                     color: white;
@@ -338,14 +338,14 @@ const Login = () => {
                 }
 
                 .login-btn:hover {
-                    box-shadow: 0 8px 25px rgba(26,42,108,0.3);
-                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(26,42,108,0.25);
+                    transform: translateY(-1.5px);
                 }
 
                 .login-hint {
                     text-align: center;
-                    margin-top: 1.2rem;
-                    font-size: 0.82rem;
+                    margin-top: 1rem;
+                    font-size: 0.78rem;
                     color: #94a3b8;
                 }
 
@@ -358,6 +358,48 @@ const Login = () => {
                     .quote-section { padding: 0; }
                     .login-form-section { padding: 0; }
                     .quote-heading { font-size: 1.8rem; }
+                }
+
+                /* === DARK MODE OVERRIDES === */
+                body.dark .login-page-wrapper {
+                    background: linear-gradient(-45deg, #0b1329, #0f172a, #020617, #0b1329);
+                }
+                body.dark .split-layout {
+                    background: rgba(30, 41, 59, 0.7);
+                    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+                }
+                body.dark .quote-heading {
+                    color: var(--secondary);
+                }
+                body.dark .gita-quote {
+                    color: var(--text-primary);
+                    border-left-color: var(--secondary);
+                }
+                body.dark .translation {
+                    color: var(--text-secondary);
+                }
+                body.dark .login-title {
+                    color: var(--primary);
+                }
+                body.dark .login-input {
+                    background-color: rgba(15, 23, 42, 0.6);
+                    border-color: var(--border-color);
+                    color: var(--text-primary);
+                }
+                body.dark .login-input:focus {
+                    border-color: var(--primary);
+                    background-color: rgba(15, 23, 42, 0.85);
+                }
+                body.dark .login-hint {
+                    color: var(--text-secondary);
+                }
+                body.dark .login-divider {
+                    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
+                }
+                @media (max-width: 768px) {
+                    body.dark .login-divider {
+                        background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+                    }
                 }
             `}</style>
         </div>

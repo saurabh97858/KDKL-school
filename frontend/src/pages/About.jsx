@@ -37,7 +37,7 @@ const About = () => {
     };
 
     return (
-        <div className="premium-light-page" style={{ backgroundColor: '#fdf6b2', minHeight: '100vh', display: 'flex', flexDirection: 'column', margin: 0, padding: 0 }}>
+        <div className="premium-light-page" style={{ backgroundColor: 'var(--bg-home)', minHeight: '100vh', display: 'flex', flexDirection: 'column', margin: 0, padding: 0, transition: 'background-color 0.3s ease, color 0.3s ease' }}>
             <Navbar />
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {loading ? (
@@ -77,10 +77,10 @@ const About = () => {
                                     onError={(e) => e.target.style.display = 'none'}
                                 />
                                 {!founder?.imageUrl && (
-                                    <div style={{ width: '100%', height: '400px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '24px' }}>
-                                        <User size={80} color="#cbd5e1" />
-                                    </div>
-                                )}
+                                     <div style={{ width: '100%', height: '400px', background: 'var(--bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '24px' }}>
+                                         <User size={80} color="var(--text-secondary)" />
+                                     </div>
+                                 )}
                                 <div className="founder-badge light-glass-heavy">
                                     <h3 className="text-navy">{founder?.name || 'KK BAJPAI'}</h3>
                                     <span className="text-crimson">Founder & Visionary</span>
@@ -142,11 +142,11 @@ const About = () => {
                                         className="leadership-image principal-img"
                                         onError={(e) => e.target.style.display = 'none'}
                                     />
-                                    {!prin.imageUrl && (
-                                        <div style={{ width: '100%', height: '350px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '24px', border: '8px solid #f8fafc' }}>
-                                            <GraduationCap size={60} color="#cbd5e1" />
-                                        </div>
-                                    )}
+                                     {!prin.imageUrl && (
+                                         <div style={{ width: '100%', height: '350px', background: 'var(--card-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '24px', border: '8px solid var(--bg-light)' }}>
+                                             <GraduationCap size={60} color="var(--text-secondary)" />
+                                         </div>
+                                     )}
                                 </div>
                             </motion.div>
                         ))}
@@ -209,14 +209,15 @@ const About = () => {
 
             <style>{`
                 .premium-light-page {
-                    background: #fdf6b2;
+                    background: var(--bg-home);
                     min-height: 100vh;
                     font-family: 'Inter', system-ui, sans-serif;
                     position: relative;
                     overflow-x: hidden;
-                    color: #0f172a;
+                    color: var(--text-primary);
                     display: flex;
                     flex-direction: column;
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
                 /* Ensure footer is at absolute bottom */
                 #root {
@@ -226,7 +227,7 @@ const About = () => {
                 }
                 .loading-screen {
                     display: flex; justify-content: center; align-items: center; height: 100vh;
-                    background: #fdf6b2; color: #1a2a6c; font-size: 1.5rem; font-weight: bold;
+                    background: var(--bg-home); color: var(--primary); font-size: 1.5rem; font-weight: bold;
                 }
                 .bg-blob {
                     position: absolute;
@@ -245,29 +246,28 @@ const About = () => {
                     100% { transform: translateY(-30px) scale(1.05) rotate(5deg); }
                 }
                 .light-glass-panel {
-                    background: rgba(255, 255, 255, 0.7);
+                    background: var(--glass);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.8);
+                    border: 1px solid var(--glass-border);
                     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
                 }
                 .light-glass-heavy {
-                    background: rgba(255, 255, 255, 0.85);
+                    background: var(--glass);
                     backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255, 255, 255, 0.9);
+                    border: 1px solid var(--glass-border);
                     box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
                     border-radius: 28px;
                 }
                 .light-glass-inset {
-                    background: rgba(241, 245, 249, 0.6);
-                    border-top: 1px solid rgba(255, 255, 255, 1);
-                    border-left: 1px solid rgba(255, 255, 255, 1);
+                    background: var(--bg-light);
+                    border: 1px solid var(--border-color);
                 }
-                .text-navy { color: #1a2a6c; }
-                .text-crimson { color: #b21f1f; font-weight: 600; }
-                .text-slate { color: #475569; }
-                .text-gray { color: #64748b; }
-                .text-accent { color: #b21f1f; }
+                .text-navy { color: var(--primary); }
+                .text-crimson { color: var(--secondary); font-weight: 600; }
+                .text-slate { color: var(--text-secondary); }
+                .text-gray { color: var(--text-secondary); }
+                .text-accent { color: var(--accent); }
 
                 .intro-section { margin: 6rem auto 1.5rem; max-width: 800px; padding: 2rem 1rem; text-align: center; border-radius: 24px; position: relative; z-index: 10; }
                 .main-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; margin: 0; }

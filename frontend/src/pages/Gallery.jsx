@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, SearchX } from 'lucide-react';
-import { Lightbox, ScrollToTop, WhatsAppButton } from '../components/GlobalUI';
+import { Lightbox, ScrollToTop } from '../components/GlobalUI';
 
 const Gallery = () => {
     const [images, setImages] = useState([]);
@@ -40,26 +40,26 @@ const Gallery = () => {
     };
 
     return (
-        <div className="premium-light-page" style={{ backgroundColor: '#fdf6b2', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="premium-light-page" style={{ backgroundColor: 'var(--bg-home)', minHeight: '100vh', display: 'flex', flexDirection: 'column', transition: 'background-color 0.3s ease, color 0.3s ease' }}>
             <Navbar />
             
             {loading ? (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
                     <div className="spinner"></div>
-                    <p style={{ marginTop: '1rem', color: '#1a2a6c', fontWeight: '600' }}>Loading School Memories...</p>
+                    <p style={{ marginTop: '1rem', color: 'var(--primary)', fontWeight: '600' }}>Loading School Memories...</p>
                 </div>
             ) : (
                 <>
                 {/* Aesthetic Background Blobs */}
             <div className="bg-blob blob-1"></div>
             <div className="bg-blob blob-2"></div>
-
+ 
             <div className="gallery-wrapper">
                 {/* Intro Segment */}
                 <div className="intro-section light-glass-panel">
                     <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-                            <Camera size={40} color="#1a2a6c" />
+                            <Camera size={40} color="var(--primary)" />
                         </div>
                         <h1 className="main-title text-navy">Discover Our Campus</h1>
                         <div className="divider-line crimson-bg"></div>
@@ -144,7 +144,6 @@ const Gallery = () => {
                 />
             )}
             <ScrollToTop />
-            <WhatsAppButton phone="919999999999" message="Hello! I want to know about KDKL School." />
 
             <footer className="elegant-footer">
                 <h2>KDKL SHASTRI INTER COLLEGE</h2>
@@ -158,17 +157,18 @@ const Gallery = () => {
             )}
             <style>{`
                 .premium-light-page {
-                    background-color: #fdf6b2;
+                    background-color: var(--bg-home);
                     min-height: 100vh;
                     font-family: 'Inter', system-ui, sans-serif;
                     position: relative;
                     overflow: hidden;
                     display: flex;
                     flex-direction: column;
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
                 .loading-state {
                     display: flex; justify-content: center; align-items: center; height: 100vh;
-                    background: #fdf6b2; color: #1a2a6c; font-size: 1.5rem; font-weight: bold;
+                    background: var(--bg-home); color: var(--primary); font-size: 1.5rem; font-weight: bold;
                 }
 
                 /* Aesthetic Light Blobs */
@@ -190,17 +190,17 @@ const Gallery = () => {
 
                 /* Light Glassmorphism */
                 .light-glass-panel {
-                    background: rgba(255, 255, 255, 0.7);
+                    background: var(--glass);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.8);
+                    border: 1px solid var(--glass-border);
                     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
                 }
 
                 /* Text Colors */
-                .text-navy { color: #1a2a6c; }
-                .text-slate { color: #475569; }
-                .crimson-bg { background: #b21f1f; }
+                .text-navy { color: var(--primary); }
+                .text-slate { color: var(--text-secondary); }
+                .crimson-bg { background: var(--secondary); }
 
                 /* Intro Section */
                 .gallery-wrapper {
@@ -327,7 +327,7 @@ const Gallery = () => {
                     border: 1px solid rgba(255,255,255,0.3);
                 }
 
-                .card-info.light-info { padding: 1.5rem; background: white; }
+                .card-info.light-info { padding: 1.5rem; background: var(--card-bg); transition: background 0.3s ease; }
                 .card-info h3 { margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
                 .category-tag { font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 

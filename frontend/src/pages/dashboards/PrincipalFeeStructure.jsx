@@ -61,63 +61,64 @@ const PrincipalFeeStructure = () => {
                     <p style={{ color: '#64748b' }}>Define and adjust fees for each class and medium.</p>
                 </div>
 
-                <div className="glass-card" style={{ padding: '2rem', background: 'white', marginBottom: '2rem' }}>
-                    <h3 style={{ marginBottom: '1.5rem', color: '#1a2a6c' }}>{editing ? `Editing: ${editing}` : 'Add/Update Class Fees'}</h3>
-                    <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1.2rem', alignItems: 'end' }}>
+                <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+                    <h3 style={{ marginBottom: '1.2rem', color: 'var(--primary)' }}>{editing ? `Editing: ${editing}` : 'Add/Update Class Fees'}</h3>
+                    <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', alignItems: 'end' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Class</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Class</label>
                             <select className="form-input" required value={formData.className} onChange={(e) => setFormData({ ...formData, className: e.target.value })}>
                                 <option value="">Select Class</option>
                                 {classes.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Medium</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Medium</label>
                             <select className="form-input" required value={formData.medium} onChange={(e) => setFormData({ ...formData, medium: e.target.value })}>
                                 {mediums.map(m => <option key={m} value={m}>{m}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Tuition</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Tuition</label>
                             <input type="number" className="form-input" value={formData.tuitionFee} onChange={(e) => setFormData({ ...formData, tuitionFee: e.target.value })} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Books</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Books</label>
                             <input type="number" className="form-input" value={formData.booksFee} onChange={(e) => setFormData({ ...formData, booksFee: e.target.value })} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Dress</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Dress</label>
                             <input type="number" className="form-input" value={formData.dressFee} onChange={(e) => setFormData({ ...formData, dressFee: e.target.value })} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Admission</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Admission</label>
                             <input type="number" className="form-input" value={formData.admissionCharges} onChange={(e) => setFormData({ ...formData, admissionCharges: e.target.value })} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px' }}>Other</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '5px', color: 'var(--text-secondary)' }}>Other</label>
                             <input type="number" className="form-input" value={formData.otherCharges} onChange={(e) => setFormData({ ...formData, otherCharges: e.target.value })} />
                         </div>
-                        <button type="submit" className="btn btn-primary" style={{ height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                            <Save size={18} /> {editing ? 'Update' : 'Save'}
+                        <button type="submit" className="btn btn-primary" style={{ height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '100%' }}>
+                            <Save size={16} /> {editing ? 'Update' : 'Save'}
                         </button>
                     </form>
                 </div>
 
-                <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                    <span style={{ fontWeight: '600', color: '#1a2a6c' }}>Filter by Medium:</span>
+                <div style={{ marginBottom: '1.2rem', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '600', color: 'var(--primary)' }}>Filter by Medium:</span>
                     {['All', 'Hindi', 'English'].map(m => (
                         <button 
                             key={m} 
                             onClick={() => setFilterMedium(m)}
                             style={{ 
-                                padding: '6px 16px', 
+                                padding: '5px 14px', 
                                 borderRadius: '20px', 
                                 border: 'none', 
-                                background: filterMedium === m ? '#1a2a6c' : '#e2e8f0',
-                                color: filterMedium === m ? 'white' : '#1a2a6c',
+                                background: filterMedium === m ? 'var(--primary)' : 'var(--border-color)',
+                                color: filterMedium === m ? 'white' : 'var(--text-primary)',
                                 cursor: 'pointer',
                                 fontWeight: '600',
-                                transition: '0.3s'
+                                transition: '0.3s',
+                                fontSize: '0.85rem'
                             }}
                         >
                             {m}
@@ -125,19 +126,19 @@ const PrincipalFeeStructure = () => {
                     ))}
                 </div>
 
-                <div className="glass-card" style={{ background: 'white', overflowX: 'auto' }}>
+                <div className="glass-card" style={{ overflowX: 'auto', marginBottom: '2rem' }}>
                     <table className="data-table" style={{ width: '100%' }}>
                         <thead>
-                            <tr style={{ background: '#1a2a6c', color: 'white' }}>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', borderRadius: '12px 0 0 0', fontWeight: '800', textTransform: 'uppercase' }}>Class</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Medium</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Tuition</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Books</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Dress</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Admission</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Other</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', fontWeight: '800', textTransform: 'uppercase' }}>Total</th>
-                                <th style={{ padding: '1.2rem', background: '#1a2a6c !important', backgroundColor: '#1a2a6c', color: 'white !important', borderRadius: '0 12px 0 0', fontWeight: '800', textTransform: 'uppercase' }}>Action</th>
+                            <tr>
+                                <th>Class</th>
+                                <th>Medium</th>
+                                <th>Tuition</th>
+                                <th>Books</th>
+                                <th>Dress</th>
+                                <th>Admission</th>
+                                <th>Other</th>
+                                <th>Total</th>
+                                <th style={{ textAlign: 'center' }}>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,8 +151,8 @@ const PrincipalFeeStructure = () => {
                                             borderRadius: '12px', 
                                             fontSize: '0.75rem', 
                                             fontWeight: '700',
-                                            background: f.medium === 'English' ? '#e0f2fe' : '#fef3c7',
-                                            color: f.medium === 'English' ? '#0369a1' : '#92400e'
+                                            background: f.medium === 'English' ? 'rgba(3, 105, 161, 0.15)' : 'rgba(251, 191, 36, 0.15)',
+                                            color: f.medium === 'English' ? '#0284c7' : '#d97706'
                                         }}>
                                             {f.medium}
                                         </span>
@@ -161,13 +162,13 @@ const PrincipalFeeStructure = () => {
                                     <td>₹{f.dressFee}</td>
                                     <td>₹{f.admissionCharges}</td>
                                     <td>₹{f.otherCharges}</td>
-                                    <td style={{ fontWeight: '800', color: '#166534' }}>₹{f.total}</td>
-                                    <td>
-                                        <button onClick={() => startEdit(f)} className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>Edit</button>
+                                    <td style={{ fontWeight: '800', color: '#22c55e' }}>₹{f.total}</td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <button onClick={() => startEdit(f)} className="btn btn-primary" style={{ padding: '0.35rem 0.7rem', fontSize: '0.8rem' }}>Edit</button>
                                     </td>
                                 </tr>
                             ))}
-                            {filteredFees.length === 0 && <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>No fee data found for this medium.</td></tr>}
+                            {filteredFees.length === 0 && <tr><td colSpan="9" style={{ textAlign: 'center', padding: '1.5rem', opacity: 0.5 }}>No fee data found for this medium.</td></tr>}
                         </tbody>
                     </table>
                 </div>

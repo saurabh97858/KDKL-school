@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
-import { Bell, Trash2, Edit2 } from 'lucide-react';
+import { Bell, Trash2, Edit2, Sparkles } from 'lucide-react';
 
 const PrincipalNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [message, setMessage] = useState('');
     const [type, setType] = useState('Emergency');
     const [editingId, setEditingId] = useState(null);
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [aiLoading, setAiLoading] = useState(false);
 
     useEffect(() => {
         fetchNotifications();
@@ -46,6 +48,21 @@ const PrincipalNotifications = () => {
         } catch (err) { alert('Action failed'); }
     };
 
+    const handleAIGenerate = async () => {
+        if (!aiPrompt.trim()) return;
+        setAiLoading(true);
+        try {
+            const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+            const { data } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/principal/generate-notice', { prompt: aiPrompt }, config);
+            setMessage(data.notice);
+            setAiPrompt('');
+        } catch (err) {
+            alert('Failed to generate notice with AI');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this alert?')) return;
         try {
@@ -69,6 +86,28 @@ const PrincipalNotifications = () => {
                         {editingId && <button onClick={() => {setEditingId(null); setMessage('');}} className="btn btn-secondary">Cancel Edit</button>}
                     </div>
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {/* AI Alert Generator input */}
+                        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', marginBottom: '0.2rem' }}>
+                            <input 
+                                type="text"
+                                value={aiPrompt}
+                                onChange={(e) => setAiPrompt(e.target.value)}
+                                placeholder="Write notice using AI (e.g. holiday on Friday for Diwali, meeting at 10 AM)..."
+                                className="form-input"
+                                style={{ flex: 1, padding: '0.5rem 0.8rem', fontSize: '0.85rem' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={handleAIGenerate}
+                                disabled={aiLoading || !aiPrompt.trim()}
+                                className="btn btn-secondary"
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}
+                            >
+                                <Sparkles size={14} color="var(--primary)" />
+                                {aiLoading ? 'Composing...' : 'AI Compose'}
+                            </button>
+                        </div>
+
                         <textarea 
                             placeholder="Type your notification here..." 
                             value={message} 

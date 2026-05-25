@@ -7,10 +7,31 @@
   --bg-light: #f8f9fa;
   --bg-dashboard: #fefce8; /* Light Yellow Dashboard */
   --bg-dark: #121212;
+  --bg-home: #fdf6b2;
+  --card-bg: #ffffff;
+  --border-color: #cbd5e1;
+  --navbar-bg: #fffde7;
   --glass: rgba(255, 255, 255, 0.6);
   --glass-border: rgba(255, 255, 255, 0.4);
   --text-primary: #1a1a1a;
   --text-secondary: #4a4a4a;
+}
+
+body.dark {
+  --primary: #818cf8;
+  --secondary: #f43f5e;
+  --accent: #fbbf24;
+  --bg-light: #0f172a;
+  --bg-dashboard: #0b1329;
+  --bg-dark: #020617;
+  --bg-home: #0f172a;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+  --navbar-bg: #1e293b;
+  --glass: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -38,6 +59,7 @@ body {
   background-color: var(--bg-light);
   color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4 {
@@ -46,20 +68,27 @@ h1, h2, h3, h4 {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--glass);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
+  color: var(--text-primary);
+  transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
 }
 
 .btn {
-  padding: 0.8rem 1.5rem;
+  padding: 0.55rem 1.2rem;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .btn-primary {
@@ -70,7 +99,19 @@ h1, h2, h3, h4 {
 .btn-primary:hover {
   opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(26, 42, 108, 0.2);
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1.5px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .navbar {
@@ -240,8 +281,8 @@ h1, h2, h3, h4 {
 
 .dashboard-content {
   flex-grow: 1;
-  padding: 2.5rem;
-  padding-top: 6rem;
+  padding: 1.5rem 1.8rem;
+  padding-top: 5rem;
   overflow-y: auto;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
@@ -252,50 +293,95 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 1024px) {
-  .dashboard-content { padding-top: 5.5rem; margin-left: 0; }
+  .dashboard-content { padding-top: 4.8rem; margin-left: 0; }
 }
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  background: var(--card-bg);
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .data-table {
   width: 100%;
-  background: white;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: 10px;
   overflow: hidden;
   border-collapse: collapse;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .data-table th, .data-table td {
-  padding: 1rem;
+  padding: 0.65rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .data-table th {
-  background: #f8f9fa;
-  font-weight: 600;
+  background: var(--bg-light);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.data-table tbody tr:hover td {
+  background-color: var(--bg-light);
 }
 
 .form-input {
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 0.55rem 0.8rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background-color: var(--card-bg);
+  transition: all 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+}
+
+/* Global dashboard typography overrides */
+.dashboard-content h1 {
+  font-size: 1.85rem !important;
+  color: var(--primary);
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard-content h2 {
+  font-size: 1.45rem !important;
+}
+
+.dashboard-content h3 {
+  font-size: 1.25rem !important;
+  color: var(--primary);
+  font-weight: 700;
 }
 
 /* Dashboard Responsive Tweaks */
@@ -336,4 +422,245 @@ h1, h2, h3, h4 {
 .social-icon-btn:nth-child(2):hover {
     background: #1877F2;
     color: white;
+}
+
+/* Sidebar Links styling */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.55rem 0.8rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-left: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.sidebar-link:hover {
+    background: var(--bg-light);
+    color: var(--primary);
+    transform: translateX(4px);
+}
+.sidebar-link.active-link {
+    background: rgba(26, 42, 108, 0.1);
+    color: var(--primary);
+    font-weight: 700;
+    border-left-color: var(--primary);
+}
+body.dark .sidebar-link.active-link {
+    background: rgba(129, 140, 248, 0.15);
+}
+
+.logout-btn-sidebar {
+    color: #ef4444 !important;
+    transition: all 0.3s ease;
+}
+.logout-btn-sidebar:hover {
+    background: rgba(239, 68, 68, 0.08) !important;
+    color: #f87171 !important;
+}
+
+/* Option element background for dark mode dropdowns */
+select option {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+/* Hover effects & cursor pointer indicator */
+a, button, select, input, label[for], textarea {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn, .login-btn-premium, .sidebar-toggle-btn, .nav-theme-toggle {
+  cursor: pointer;
+}
+
+/* Dark Mode legibility overrides for hardcoded dashboard headers and cards */
+body.dark .dashboard-content h1,
+body.dark .dashboard-content h3 {
+  color: var(--primary) !important;
+}
+body.dark .dashboard-content h2 {
+  color: var(--text-primary) !important;
+}
+body.dark .dashboard-content p,
+body.dark .dashboard-content label {
+  color: var(--text-primary) !important;
+}
+body.dark .dashboard-content p.text-gray,
+body.dark .dashboard-content span.metric-label,
+body.dark .dashboard-content .stat-card p {
+  color: var(--text-secondary) !important;
+}
+body.dark .stat-card {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-top-color: var(--primary) !important;
+}
+body.dark .glass-card {
+  background: var(--glass) !important;
+  border-color: var(--glass-border) !important;
+}
+body.dark .data-table {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+body.dark .data-table th {
+  background: var(--bg-light) !important;
+  color: var(--text-primary) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+body.dark .data-table td {
+  border-bottom-color: var(--border-color) !important;
+}
+body.dark .data-table tbody tr:hover td {
+  background-color: var(--bg-light) !important;
+}
+body.dark .sidebar-toggle-btn {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+/* --- BUTTON FOCUS/ACTIVE & LEGIBILITY FIXES --- */
+
+/* Fix active and focus states of buttons to prevent turning white */
+.btn:focus, .btn:active, .btn:focus-visible,
+button:focus, button:active, button:focus-visible,
+input[type="submit"]:focus, input[type="submit"]:active {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.4) !important;
+}
+
+.btn-primary:focus, .btn-primary:active, .btn-primary:focus-visible {
+  background: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  color: white !important;
+}
+
+/* Base button hover transitions */
+.btn:hover, button:hover, input[type="submit"]:hover {
+  cursor: pointer;
+  filter: brightness(1.05);
+}
+
+/* Secondary button adaptation for dark mode */
+body.dark .btn-secondary {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+body.dark .btn-secondary:hover {
+  background: var(--bg-light) !important;
+  color: var(--text-primary) !important;
+}
+body.dark .btn-secondary:focus, body.dark .btn-secondary:active, body.dark .btn-secondary:focus-visible {
+  background: var(--bg-light) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Form input focus preservation in dark mode */
+body.dark .form-input:focus {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+body.dark select,
+body.dark textarea,
+body.dark input {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+body.dark select:focus,
+body.dark textarea:focus,
+body.dark input:focus {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Dark Mode Legibility Overrides for Hardcoded Backgrounds & Colors (matching hex and serialized DOM styles) */
+body.dark [style*="background: white"],
+body.dark [style*="background:white"],
+body.dark [style*="background: rgb(255, 255, 255)"],
+body.dark [style*="background:rgb(255, 255, 255)"],
+body.dark [style*="background-color: rgb(255, 255, 255)"],
+body.dark [style*="background-color:rgb(255, 255, 255)"],
+body.dark [style*="backgroundColor: white"],
+body.dark [style*="backgroundColor:white"],
+body.dark [style*="background: rgba(255, 255, 255"],
+body.dark [style*="background:rgba(255, 255, 255"],
+body.dark [style*="background-color: rgba(255, 255, 255"],
+body.dark [style*="background-color:rgba(255, 255, 255"] {
+  background: var(--card-bg) !important;
+  background-color: var(--card-bg) !important;
+}
+
+body.dark [style*="color: #1a2a6c"],
+body.dark [style*="color:#1a2a6c"],
+body.dark [style*="color: rgb(26, 42, 108)"],
+body.dark [style*="color:rgb(26, 42, 108)"] {
+  color: var(--text-primary) !important;
+}
+
+body.dark [style*="color: #b21f1f"],
+body.dark [style*="color:#b21f1f"],
+body.dark [style*="color: rgb(178, 31, 31)"],
+body.dark [style*="color:rgb(178, 31, 31)"] {
+  color: var(--secondary) !important;
+}
+
+body.dark [style*="color: #64748b"],
+body.dark [style*="color:#64748b"],
+body.dark [style*="color: rgb(100, 116, 139)"],
+body.dark [style*="color:rgb(100, 116, 139)"],
+body.dark [style*="color: #666"],
+body.dark [style*="color:#666"],
+body.dark [style*="color: rgb(102, 102, 102)"],
+body.dark [style*="color:rgb(102, 102, 102)"],
+body.dark [style*="color: #999"],
+body.dark [style*="color:#999"],
+body.dark [style*="color: rgb(153, 153, 153)"],
+body.dark [style*="color:rgb(153, 153, 153)"] {
+  color: var(--text-secondary) !important;
+}
+
+body.dark .dashboard-content table tr[style*="background: #f1f5f9"],
+body.dark .dashboard-content table tr[style*="background:#f1f5f9"],
+body.dark .dashboard-content table tr[style*="background: rgb(241, 245, 249)"],
+body.dark .dashboard-content table tr[style*="background:rgb(241, 245, 249)"] {
+  background: var(--bg-light) !important;
+}
+
+/* High-contrast status badge & button overrides for dark mode */
+body.dark [style*="rgb(220, 252, 231)"],
+body.dark [style*="rgb(220,252,231)"],
+body.dark [style*="background-color: rgb(220, 252, 231)"],
+body.dark [style*="background-color:rgb(220,252,231)"],
+body.dark [style*="background: rgb(220, 252, 231)"],
+body.dark [style*="background:rgb(220,252,231)"] {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #4ade80 !important;
+}
+
+body.dark [style*="rgb(254, 226, 226)"],
+body.dark [style*="rgb(254,226,226)"],
+body.dark [style*="background-color: rgb(254, 226, 226)"],
+body.dark [style*="background-color:rgb(254,226,226)"],
+body.dark [style*="background: rgb(254, 226, 226)"],
+body.dark [style*="background:rgb(254,226,226)"] {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+body.dark [style*="rgb(254, 249, 195)"],
+body.dark [style*="rgb(254,249,195)"],
+body.dark [style*="background-color: rgb(254, 249, 195)"],
+body.dark [style*="background-color:rgb(254,249,195)"],
+body.dark [style*="background: rgb(254, 249, 195)"],
+body.dark [style*="background:rgb(254,249,195)"] {
+  background-color: rgba(234, 179, 8, 0.2) !important;
+  background: rgba(234, 179, 8, 0.2) !important;
+  color: #facc15 !important;
 }

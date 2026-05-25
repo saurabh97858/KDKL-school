@@ -11,7 +11,7 @@ const {
     getFeesByClass, saveFeeRecord, addFeePayment,
     addTopper, getToppers, deleteTopper,
     addMoment, getMoments, deleteMoment,
-    getFeeStructures, updateFeeStructure, updateApplicationStatus
+    getFeeStructures, updateFeeStructure, updateApplicationStatus, generateAINotice
 } = require('../controllers/principalController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -84,5 +84,8 @@ router.post('/fee-structure', updateFeeStructure);
 
 // Admission Status
 router.put('/application-status/:id', updateApplicationStatus);
+
+// AI notice generator
+router.post('/generate-notice', generateAINotice);
 
 module.exports = router;

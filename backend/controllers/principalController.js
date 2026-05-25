@@ -12,6 +12,10 @@ const Topper = require('../models/Topper');
 const Moment = require('../models/Moment');
 const FeeStructure = require('../models/FeeStructure');
 
+// Import Notifier and Gemini AI
+const { sendEmail, sendSMS } = require('../utils/notifier');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 // Add Teacher
 const addTeacher = async (req, res) => {
     const { username, password, name, email, mobileNumber, currentAddress, permanentAddress, salary, subject, assignedClass, qualification, experience, role, expertIn, medium } = req.body;
@@ -278,6 +282,20 @@ const addNotification = async (req, res) => {
     try {
         const { message, type } = req.body;
         const notification = await Notification.create({ message, type });
+        
+        // Broadcast announcement email to all registered portal users asynchronously
+        User.find({}, 'email').then(users => {
+            const emails = users.map(u => u.email).filter(Boolean);
+            if (emails.length > 0) {
+                const subject = `New School Announcement - KDKL SIC & KPS`;
+                const text = `Dear Student/Teacher/Parent,\n\nA new announcement has been published by the administration:\n\n"${message}"\n\nPlease log in to the portal to view full details.\n\nRegards,\nKDKL School Administration`;
+                
+                emails.forEach(email => {
+                    sendEmail(email, subject, text).catch(e => console.error('Failed to send notice email to:', email, e.message));
+                });
+            }
+        }).catch(err => console.error('Error fetching users for broadcast:', err));
+
         res.status(201).json(notification);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -600,7 +618,79 @@ module.exports = {
         try {
             const { status } = req.body;
             const application = await AdmissionApplication.findByIdAndUpdate(req.params.id, { status }, { new: true });
+            
+            // Send status update email asynchronously
+            if (application && application.emailId) {
+                const subject = `Admission Application Status Update - KDKL School`;
+                const text = `Dear Parent/Student,\n\nYour online application for ${application.studentName} (Class ${application.className}) has been reviewed.\nStatus: ${status}.\n\nOur admissions office will get in touch with you shortly regarding the next steps.\n\nRegards,\nAdmissions Team\nKDKL Shastri Inter College & Kavita Public School`;
+                
+                sendEmail(application.emailId, subject, text).catch(e => console.error('Failed to send status update email:', e.message));
+            }
+
+            // Also send SMS log
+            const smsPhone = application?.mobileNumber || application?.contactNumber;
+            if (smsPhone) {
+                const smsText = `Dear Parent, the admission application status for ${application.studentName} has been updated to: ${status}. KDKL School Admissions Team.`;
+                sendSMS(smsPhone, smsText).catch(e => console.error('Failed to send status update SMS:', e.message));
+            }
+
             res.json(application);
         } catch (error) { res.status(500).json({ message: error.message }); }
+    },
+
+    // AI notice generator
+    generateAINotice: async (req, res) => {
+        const { prompt } = req.body;
+        if (!prompt) return res.status(400).json({ message: 'Prompt is required' });
+
+        const simulatedNotice = `[NOTICE]\n\nDear Students, Teachers, and Parents,\nThis is to notify you regarding: ${prompt}. Please contact the office for details.\n\n--------------------------------------------------\n\n[सूचना]\n\nप्रिय छात्रों, शिक्षकों और अभिभावकों,\nयह आपको इस बारे में सूचित करने के लिए है: ${prompt}। अधिक जानकारी के लिए कार्यालय से संपर्क करें।`;
+
+        try {
+            const apiKey = process.env.GEMINI_API_KEY;
+            if (!apiKey) {
+                console.warn('GEMINI_API_KEY is missing from environment. Returning simulated notice.');
+                return res.json({ notice: simulatedNotice });
+            }
+
+            const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+            let text = null;
+            let lastError = null;
+
+            const genAI = new GoogleGenerativeAI(apiKey);
+
+            const geminiPrompt = `
+You are an administrative secretary at KDKL Shastri Inter College & Kavita Public School.
+Write a formal, brief school notice/alert based on the following instruction:
+"${prompt}"
+
+Provide the notice in a bilingual format:
+1. English notice section (with a clear title "NOTICE" or similar).
+2. The exact Hindi translation section below it (with a title "सूचना" or similar).
+
+Format the output cleanly with appropriate paragraph breaks. Do not include any greeting, conversational text, introduction or explanation outside of the notice itself. Only return the final notice text.
+`;
+
+            for (const modelName of modelsToTry) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: modelName });
+                    const result = await model.generateContent(geminiPrompt);
+                    text = result.response.text();
+                    if (text) break;
+                } catch (err) {
+                    console.warn(`Gemini model ${modelName} notice call failed:`, err.message);
+                    lastError = err;
+                }
+            }
+
+            if (text) {
+                return res.json({ notice: text });
+            }
+
+            console.error('All Gemini models failed for notice generation. Returning simulated fallback.', lastError);
+            return res.json({ notice: simulatedNotice });
+        } catch (err) {
+            console.error('Error generating AI notice:', err);
+            res.status(500).json({ message: 'Failed to generate AI notice: ' + err.message });
+        }
     }
 };

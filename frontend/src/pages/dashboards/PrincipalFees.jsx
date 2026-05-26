@@ -125,24 +125,46 @@ const PrincipalFees = () => {
         return '#ef4444';
     };
 
-    // Static Mock Data for overview dashboard table (Screenshot 3)
-    const mockOverviewRecords = [
-        { c: 'Class 1', med: 'Hindi', stud: 45, total: 225000, coll: 202500, pend: 22500, pct: 90 },
-        { c: 'Class 2', med: 'Hindi', stud: 42, total: 210000, coll: 176400, pend: 33600, pct: 84 },
-        { c: 'Class 3', med: 'English', stud: 40, total: 240000, coll: 216000, pend: 24000, pct: 90 },
-        { c: 'Class 4', med: 'English', stud: 38, total: 228000, coll: 182400, pend: 45600, pct: 80 },
-        { c: 'Class 5', med: 'Hindi', stud: 41, total: 246000, coll: 218300, pend: 27700, pct: 89 },
-        { c: 'Class 6', med: 'Hindi', stud: 35, total: 210000, coll: 189000, pend: 21000, pct: 90 },
-        { c: 'Class 7', med: 'English', stud: 32, total: 192000, coll: 163200, pend: 28800, pct: 85 },
-        { c: 'Class 8', med: 'Hindi', stud: 30, total: 180000, coll: 153000, pend: 27000, pct: 85 },
-        { c: 'Class 9', med: 'English', stud: 28, total: 196000, coll: 166600, pend: 29400, pct: 85 },
-        { c: 'Class 10', med: 'English', stud: 25, total: 175000, coll: 148750, pend: 26250, pct: 85 },
-        { c: 'Class 11', med: 'Hindi', stud: 22, total: 176000, coll: 140800, pend: 35200, pct: 80 },
-        { c: 'Class 12', med: 'English', stud: 20, total: 180000, coll: 144000, pend: 36000, pct: 80 }
-    ];
+    const [overviewRecords, setOverviewRecords] = useState([]);
+    const [overallStats, setOverallStats] = useState({ students: 0, totalFees: 0, depositedFees: 0, pendingFees: 0, feeRate: 0 });
+
+    useEffect(() => {
+        fetchOverview();
+        fetchOverallStats();
+    }, []);
+
+    const fetchOverview = async () => {
+        try {
+            const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/principal/fees/overview', {
+                headers: config.headers
+            });
+            setOverviewRecords(data || []);
+        } catch (err) {
+            console.error('Error fetching fee overview:', err);
+        }
+    };
+
+    const fetchOverallStats = async () => {
+        try {
+            const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/principal/stats', {
+                headers: config.headers
+            });
+            if (data) {
+                setOverallStats({
+                    students: data.students || 0,
+                    totalFees: data.totalFees || 0,
+                    depositedFees: data.depositedFees || 0,
+                    pendingFees: data.pendingFees || 0,
+                    feeRate: data.feeRate || 0
+                });
+            }
+        } catch (err) {
+            console.error('Error fetching overall stats:', err);
+        }
+    };
 
     // Filter overview records
-    const filteredOverview = mockOverviewRecords.filter(r => {
+    const filteredOverview = overviewRecords.filter(r => {
         const matchesMed = !selectedMedium || selectedMedium === 'All Mediums' || r.med === selectedMedium;
         return matchesMed;
     });
@@ -332,7 +354,7 @@ const PrincipalFees = () => {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Total Students</span>
-                            <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>356</h2>
+                            <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>{overallStats.students}</h2>
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: '500' }}>All Students</span>
                         </div>
                     </div>
@@ -344,7 +366,7 @@ const PrincipalFees = () => {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Total Collection (This Year)</span>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>₹12,45,600</h2>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>₹{overallStats.depositedFees.toLocaleString('en-IN')}</h2>
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: '500' }}>Till Date</span>
                         </div>
                     </div>
@@ -356,7 +378,7 @@ const PrincipalFees = () => {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Pending Amount</span>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>₹2,15,300</h2>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>₹{overallStats.pendingFees.toLocaleString('en-IN')}</h2>
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: '500' }}>From All Students</span>
                         </div>
                     </div>
@@ -368,7 +390,7 @@ const PrincipalFees = () => {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Collection Rate</span>
-                            <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>85%</h2>
+                            <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.1rem 0' }}>{overallStats.feeRate}%</h2>
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: '500' }}>Overall Collection</span>
                         </div>
                     </div>

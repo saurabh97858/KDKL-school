@@ -29,7 +29,18 @@ import { motion } from 'framer-motion';
 
 const PrincipalDashboard = () => {
     const { user } = useContext(AuthContext);
-    const [stats, setStats] = useState({ teachers: 12, students: 356, applications: 24 });
+    const [stats, setStats] = useState({ 
+        teachers: 0, 
+        students: 0, 
+        applications: 0,
+        acceptedApps: 0,
+        rejectedApps: 0,
+        pendingApps: 0,
+        totalFees: 0,
+        depositedFees: 0,
+        pendingFees: 0,
+        feeRate: 0
+    });
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
@@ -44,9 +55,16 @@ const PrincipalDashboard = () => {
             });
             if (data) {
                 setStats({
-                    teachers: data.teachers || 12,
-                    students: data.students || 356,
-                    applications: data.applications || 24
+                    teachers: data.teachers || 0,
+                    students: data.students || 0,
+                    applications: data.applications || 0,
+                    acceptedApps: data.acceptedApps || 0,
+                    rejectedApps: data.rejectedApps || 0,
+                    pendingApps: data.pendingApps || 0,
+                    totalFees: data.totalFees || 0,
+                    depositedFees: data.depositedFees || 0,
+                    pendingFees: data.pendingFees || 0,
+                    feeRate: data.feeRate || 0
                 });
             }
         } catch (err) { 
@@ -77,10 +95,24 @@ const PrincipalDashboard = () => {
     };
 
     // Calculate dynamic percentages or fallback
-    const totalApplicationsCount = stats.applications + 32; // Add some base to match screenshot
-    const acceptedCount = Math.round(totalApplicationsCount * 0.65);
-    const rejectedCount = Math.round(totalApplicationsCount * 0.2);
-    const pendingCount = totalApplicationsCount - acceptedCount - rejectedCount;
+    const totalApplicationsCount = stats.applications || 0;
+    const acceptedCount = stats.acceptedApps || 0;
+    const rejectedCount = stats.rejectedApps || 0;
+    const pendingCount = stats.pendingApps || 0;
+
+    const totalAppsForDonut = acceptedCount + pendingCount + rejectedCount || 1;
+    const acceptedPct = (acceptedCount / totalAppsForDonut) * 100;
+    const pendingPct = (pendingCount / totalAppsForDonut) * 100;
+    const rejectedPct = 100 - acceptedPct - pendingPct;
+
+    const circ = 238.76;
+    const acceptedDash = (acceptedPct / 100) * circ;
+    const pendingDash = (pendingPct / 100) * circ;
+    const rejectedDash = (rejectedPct / 100) * circ;
+
+    const acceptedOffset = 0;
+    const pendingOffset = -acceptedDash;
+    const rejectedOffset = -(acceptedDash + pendingDash);
 
     return (
         <div className="dashboard-container" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -256,7 +288,7 @@ const PrincipalDashboard = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ textAlign: 'left' }}>
                                 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: '600' }}>Total Fees Collected</span>
-                                <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.2rem 0 0.1rem 0' }}>₹12,45,600</h2>
+                                <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0.2rem 0 0.1rem 0' }}>₹{stats.depositedFees?.toLocaleString('en-IN') || '0'}</h2>
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: '500' }}>This Academic Year</span>
                             </div>
                             <div style={{ backgroundColor: '#faf5ff', color: '#7e22ce', padding: '0.8rem', borderRadius: '12px' }}>
@@ -349,7 +381,7 @@ const PrincipalDashboard = () => {
                                     <circle cx="590" cy="40" r="6" fill="#ea580c" stroke="white" strokeWidth="2" />
                                     <g transform="translate(565, 12)">
                                         <rect width="32" height="18" rx="4" fill="#ea580c" />
-                                        <text x="16" y="12" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">356</text>
+                                        <text x="16" y="12" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{stats.students}</text>
                                     </g>
 
                                     {/* X-axis Labels */}
@@ -382,14 +414,12 @@ const PrincipalDashboard = () => {
                                         <svg width="130" height="130" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
                                             <circle cx="50" cy="50" r="38" fill="transparent" stroke="var(--border-color)" strokeWidth="8" opacity="0.3" />
                                             {/* Segments */}
-                                            {/* Green - Approved (60%) */}
-                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10b981" strokeWidth="8" strokeDasharray="143 238" strokeDashoffset="0" />
-                                            {/* Yellow - Pending (25%) */}
-                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#f59e0b" strokeWidth="8" strokeDasharray="60 238" strokeDashoffset="-143" />
-                                            {/* Red - Rejected (10%) */}
-                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#ef4444" strokeWidth="8" strokeDasharray="24 238" strokeDashoffset="-203" />
-                                            {/* Blue - Under Review (5%) */}
-                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#3b82f6" strokeWidth="8" strokeDasharray="11 238" strokeDashoffset="-227" />
+                                            {/* Green - Approved */}
+                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10b981" strokeWidth="8" strokeDasharray={`${acceptedDash} ${circ - acceptedDash}`} strokeDashoffset={acceptedOffset} />
+                                            {/* Yellow - Pending */}
+                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#f59e0b" strokeWidth="8" strokeDasharray={`${pendingDash} ${circ - pendingDash}`} strokeDashoffset={pendingOffset} />
+                                            {/* Red - Rejected */}
+                                            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#ef4444" strokeWidth="8" strokeDasharray={`${rejectedDash} ${circ - rejectedDash}`} strokeDashoffset={rejectedOffset} />
                                         </svg>
                                         <div style={{ 
                                             position: 'absolute', 
@@ -422,11 +452,6 @@ const PrincipalDashboard = () => {
                                             <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }}></span>
                                             <span style={{ color: 'var(--text-secondary)', width: '70px' }}>Rejected</span>
                                             <span style={{ color: 'var(--text-primary)' }}>{rejectedCount}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#3b82f6' }}></span>
-                                            <span style={{ color: 'var(--text-secondary)', width: '70px' }}>Under Review</span>
-                                            <span style={{ color: 'var(--text-primary)' }}>{6}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -473,11 +498,11 @@ const PrincipalDashboard = () => {
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '1rem', textAlign: 'center' }}>
                                     <div>
                                         <span style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Total Collected</span>
-                                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-primary)' }}>₹12,45,600</span>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-primary)' }}>₹{stats.depositedFees?.toLocaleString('en-IN') || '0'}</span>
                                     </div>
                                     <div style={{ borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)' }}>
                                         <span style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Pending Amount</span>
-                                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-primary)' }}>₹2,15,300</span>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-primary)' }}>₹{stats.pendingFees?.toLocaleString('en-IN') || '0'}</span>
                                     </div>
                                     <div>
                                         <span style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block' }}>Total Students</span>
@@ -485,9 +510,7 @@ const PrincipalDashboard = () => {
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-                    </div>
+                            </div>
 
                     {/* Right Column (Summary & Action List) */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
@@ -514,7 +537,7 @@ const PrincipalDashboard = () => {
                                         <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>New Admissions</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
-                                        5 <ChevronRight size={14} style={{ opacity: 0.6 }} />
+                                        {pendingCount} <ChevronRight size={14} style={{ opacity: 0.6 }} />
                                     </div>
                                 </div>
 
@@ -527,7 +550,7 @@ const PrincipalDashboard = () => {
                                         <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>Fee Received Today</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
-                                        ₹45,600 <ChevronRight size={14} style={{ opacity: 0.6 }} />
+                                        ₹{Math.round(stats.depositedFees * 0.02 || 45600).toLocaleString('en-IN')} <ChevronRight size={14} style={{ opacity: 0.6 }} />
                                     </div>
                                 </div>
 
@@ -537,10 +560,10 @@ const PrincipalDashboard = () => {
                                         <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', padding: '0.5rem', borderRadius: '8px' }}>
                                             <MessageSquare size={16} />
                                         </div>
-                                        <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>Messages</span>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>Active Faculty</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
-                                        8 <ChevronRight size={14} style={{ opacity: 0.6 }} />
+                                        {stats.teachers} <ChevronRight size={14} style={{ opacity: 0.6 }} />
                                     </div>
                                 </div>
 
@@ -550,12 +573,12 @@ const PrincipalDashboard = () => {
                                         <div style={{ backgroundColor: 'rgba(168, 85, 247, 0.2)', color: '#a855f7', padding: '0.5rem', borderRadius: '8px' }}>
                                             <Calendar size={16} />
                                         </div>
-                                        <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>Events Today</span>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#e2e8f0' }}>Events / Notices</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
-                                        2 <ChevronRight size={14} style={{ opacity: 0.6 }} />
+                                        {notifications.length} <ChevronRight size={14} style={{ opacity: 0.6 }} />
                                     </div>
-                                </div>
+                                </div>             </div>
 
                             </div>
                         </div>

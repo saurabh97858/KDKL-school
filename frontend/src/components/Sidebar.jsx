@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Users, UserPlus, BookOpen, Image as ImageIcon, LogOut, FileText, Bell, Lock, Settings, CreditCard, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, BookOpen, Image as ImageIcon, LogOut, FileText, Bell, Lock, Settings, CreditCard, Menu, X, Sun, Moon, Calendar } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
     const { logout } = useContext(AuthContext);
@@ -193,20 +193,57 @@ const Sidebar = ({ role }) => {
                 <ul className="sidebar-menu" style={{ 
                     flexGrow: 1, 
                     overflowY: 'auto', 
-                    padding: '0 0.8rem 1.5rem',
+                    padding: '0 0.8rem 1rem',
                     scrollbarWidth: 'none', // For Firefox
                     msOverflowStyle: 'none' // For Internet Explorer
                 }}>
                     {getLinks().map((link, idx) => {
                         const isActive = location.pathname === link.path;
+                        
+                        // Custom light theme selected states matching screenshots
+                        let lightActiveStyle = {};
+                        if (isActive && !isDark) {
+                            if (link.name === 'Fee Details' || link.name === 'Fee Management') {
+                                lightActiveStyle = {
+                                    background: '#ecfdf5',
+                                    color: '#065f46',
+                                    borderLeftColor: '#059669',
+                                    fontWeight: '700'
+                                };
+                            } else {
+                                lightActiveStyle = {
+                                    background: '#f3e8ff',
+                                    color: '#6d28d9',
+                                    borderLeftColor: '#8b5cf6',
+                                    fontWeight: '700'
+                                };
+                            }
+                        }
+
                         return (
                             <motion.li key={idx} whileTap={{ scale: 0.98 }} style={{ listStyle: 'none', marginBottom: '0.3rem' }}>
                                 <Link 
                                     to={link.path} 
                                     className={`sidebar-link ${isActive ? 'active-link' : ''}`}
+                                    style={lightActiveStyle}
                                 >
-                                    {link.icon}
+                                    <span style={isActive && !isDark ? { color: 'inherit' } : {}}>{link.icon}</span>
                                     <span>{link.name}</span>
+                                    {link.name === 'Notifications' && role === 'principal' && (
+                                        <span style={{
+                                            marginLeft: 'auto',
+                                            background: '#3b82f6',
+                                            color: 'white',
+                                            borderRadius: '50%',
+                                            width: '18px',
+                                            height: '18px',
+                                            fontSize: '0.7rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 'bold'
+                                        }}>3</span>
+                                    )}
                                 </Link>
                             </motion.li>
                         );
@@ -223,9 +260,56 @@ const Sidebar = ({ role }) => {
                         <span>Logout</span>
                     </motion.li>
                 </ul>
+
+                {/* Academic Year Box at Bottom of Sidebar */}
+                <div className="sidebar-academic-year" style={{
+                    padding: '0.8rem 0.8rem 1.2rem',
+                    borderTop: '1px solid var(--border-color)',
+                    transition: 'border-color 0.3s ease'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.8rem',
+                        background: isDark ? 'rgba(30, 41, 59, 0.4)' : '#f3f4f6',
+                        padding: '0.7rem 0.8rem',
+                        borderRadius: '12px',
+                        border: isDark ? '1px solid #1e293b' : '1px solid #e5e7eb',
+                    }}>
+                        <div style={{
+                            background: isDark ? 'rgba(234, 88, 12, 0.2)' : '#ede9fe',
+                            color: isDark ? '#fbbf24' : '#6d28d9',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                        }}>
+                            <Calendar size={16} />
+                        </div>
+                        <div>
+                            <p style={{ margin: 0, fontSize: '0.7rem', color: isDark ? '#94a3b8' : '#6b7280', fontWeight: '500' }}>Academic Year</p>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: isDark ? '#f8fafc' : '#1f2937', fontWeight: '700' }}>2025-2026</p>
+                        </div>
+                    </div>
+                </div>
+
                 <style>{`
                     .sidebar-menu::-webkit-scrollbar {
                         display: none;
+                    }
+                    /* Standard light mode hovering behavior */
+                    body:not(.dark) .sidebar-link:hover {
+                        background: #f3f4f6;
+                        color: #111827;
+                    }
+                    /* Explicit light mode overrides to match screenshots when active */
+                    body:not(.dark) .sidebar-link.active-link {
+                        background: #f3e8ff;
+                        color: #6d28d9;
+                        border-left-color: #8b5cf6;
                     }
                 `}</style>
             </motion.div>

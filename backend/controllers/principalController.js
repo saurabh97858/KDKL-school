@@ -341,9 +341,107 @@ const getDashboardStats = async (req, res) => {
         const teachersCount = await Teacher.countDocuments();
         const studentsCount = await Student.countDocuments();
         const appsCount = await AdmissionApplication.countDocuments();
-        res.json({ teachers: teachersCount, students: studentsCount, applications: appsCount });
+        
+        // Dynamic admission stats
+        const acceptedApps = await AdmissionApplication.countDocuments({ status: 'Accepted' });
+        const rejectedApps = await AdmissionApplication.countDocuments({ status: 'Rejected' });
+        const pendingApps = await AdmissionApplication.countDocuments({ status: 'Pending' });
+
+        // Dynamic fee stats
+        const feeRecords = await FeeRecord.find({});
+        let totalFees = 0;
+        let depositedFees = 0;
+        let pendingFees = 0;
+        
+        feeRecords.forEach(f => {
+            totalFees += f.totalFees || 0;
+            depositedFees += f.depositedFees || 0;
+            const p = (f.totalFees + (f.fine || 0) + (f.otherCharges || 0)) - f.depositedFees;
+            pendingFees += p > 0 ? p : 0;
+        });
+        
+        const feeRate = totalFees > 0 ? Math.round((depositedFees / totalFees) * 100) : 0;
+
+        res.json({ 
+            teachers: teachersCount, 
+            students: studentsCount, 
+            applications: appsCount,
+            acceptedApps,
+            rejectedApps,
+            pendingApps,
+            totalFees,
+            depositedFees,
+            pendingFees,
+            feeRate
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+const getFeesOverview = async (req, res) => {
+    try {
+        const students = await Student.find({});
+        const studentIds = students.map(s => s._id);
+        const feeRecords = await FeeRecord.find({ student: { $in: studentIds } });
+        
+        const feeMap = {};
+        feeRecords.forEach(f => { feeMap[f.student.toString()] = f; });
+        
+        const classSummaries = {};
+        // Group by className & medium
+        students.forEach(s => {
+            const cls = s.className || '1';
+            const med = s.medium || 'Hindi';
+            const key = `${cls}_${med}`;
+            
+            if (!classSummaries[key]) {
+                classSummaries[key] = {
+                    className: cls,
+                    medium: med,
+                    totalStudents: 0,
+                    totalFee: 0,
+                    collectedFee: 0,
+                    pendingFee: 0
+                };
+            }
+            
+            const summary = classSummaries[key];
+            summary.totalStudents += 1;
+            
+            const fee = feeMap[s._id.toString()];
+            if (fee) {
+                summary.totalFee += fee.totalFees || 0;
+                summary.collectedFee += fee.depositedFees || 0;
+                const p = (fee.totalFees + (fee.fine || 0) + (fee.otherCharges || 0)) - fee.depositedFees;
+                summary.pendingFee += p > 0 ? p : 0;
+            }
+        });
+        
+        const result = Object.values(classSummaries).map(s => {
+            const pct = s.totalFee > 0 ? Math.round((s.collectedFee / s.totalFee) * 100) : 0;
+            return {
+                c: `Class ${s.className}`,
+                med: s.medium,
+                stud: s.totalStudents,
+                total: s.totalFee,
+                coll: s.collectedFee,
+                pend: s.pendingFee,
+                pct: pct
+            };
+        });
+        
+        // Sort by class index
+        const classOrder = ['LKG','UKG','1','2','3','4','5','6','7','8','9','10','11','12'];
+        result.sort((a, b) => {
+            const aNum = a.c.replace('Class ', '');
+            const bNum = b.c.replace('Class ', '');
+            return classOrder.indexOf(aNum) - classOrder.indexOf(bNum);
+        });
+        
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -526,7 +624,7 @@ module.exports = {
     updateTeacher, deleteTeacher, updateStudent, deleteStudent,
     getDashboardStats, updateSchoolSettings, 
     addPrincipalInfo, updatePrincipalInfo, getPrincipalInfo, deletePrincipalInfo,
-    getFeesByClass, saveFeeRecord, addFeePayment, getStudentFees,
+    getFeesByClass, saveFeeRecord, addFeePayment, getStudentFees, getFeesOverview,
     
     // Toppers
     addTopper: async (req, res) => {

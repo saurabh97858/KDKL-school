@@ -2,12 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
-import { User, FileText, Upload, GraduationCap, MapPin, Phone, Mail } from 'lucide-react';
+import { User, GraduationCap, MapPin, Phone, Mail, Camera, FileText, CalendarDays, Hash, BookOpen, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const StudentDashboard = () => {
     const { user } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetchProfile();
@@ -27,128 +28,216 @@ const StudentDashboard = () => {
         if (!file) return;
         const formData = new FormData();
         formData.append('profilePic', file);
+        setUploading(true);
         try {
             await axios.put((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/student/update-profile-pic', formData, {
-                headers: { 
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('token')}` 
-                }
+                headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
-            alert('Profile picture updated successfully!');
             window.location.reload();
-        } catch (err) { alert('Upload failed'); }
+        } catch (err) { 
+            alert('Upload failed');
+            setUploading(false);
+        }
     };
 
     const getProfilePicUrl = (path) => {
-        if (!path) return 'https://via.placeholder.com/150';
+        if (!path) return null;
         if (path.startsWith('http')) return path;
         return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${path}`;
     };
 
+    const picUrl = getProfilePicUrl(user?.profilePic);
+
+    const InfoRow = ({ icon: Icon, label, value, accent }) => (
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '0.8rem 0', borderBottom: '1px solid var(--border-color)' }}>
+            <div style={{ background: accent + '15', color: accent, padding: '6px', borderRadius: '8px', marginTop: '1px', flexShrink: 0 }}>
+                <Icon size={14} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                <p style={{ margin: 0, fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.4px' }}>{label}</p>
+                <p style={{ margin: '2px 0 0', fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', wordBreak: 'break-word' }}>{value || '—'}</p>
+            </div>
+        </div>
+    );
+
+    const QuickAction = ({ label, icon: Icon, color, bg, path }) => (
+        <button 
+            onClick={() => window.location.href = path}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '1rem 1.2rem',
+                background: 'var(--card-bg)',
+                border: '1.5px solid var(--border-color)',
+                borderRadius: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                width: '100%',
+                textAlign: 'left'
+            }}
+            className="student-action-btn"
+        >
+            <div style={{ background: bg, color: color, padding: '8px', borderRadius: '10px', flexShrink: 0 }}>
+                <Icon size={18} />
+            </div>
+            <span style={{ flex: 1, fontWeight: '700', fontSize: '0.88rem', color: 'var(--text-primary)' }}>{label}</span>
+            <ArrowRight size={14} color="var(--text-secondary)" />
+        </button>
+    );
+
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container" style={{ fontFamily: "'Outfit', sans-serif" }}>
             <Sidebar role="student" />
-            <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="dashboard-content"
-            >
-                <header style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-                    <motion.div 
-                        whileHover={{ scale: 1.03 }}
-                        style={{ position: 'relative' }}
-                    >
-                        <img 
-                            src={getProfilePicUrl(user?.profilePic)} 
-                            alt="Profile" 
-                            style={{ 
-                                width: '110px', 
-                                height: '110px', 
-                                borderRadius: '50%', 
-                                objectFit: 'cover', 
-                                border: '4px solid white', 
-                                boxShadow: '0 8px 20px rgba(0,0,0,0.1)' 
-                            }} 
-                        />
-                        <label htmlFor="pic-upload" style={{ position: 'absolute', bottom: '4px', right: '4px', background: '#1a2a6c', color: 'white', padding: '8px', borderRadius: '50%', cursor: 'pointer', boxShadow: '0 4px 8px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Upload size={14} />
+            <div className="dashboard-content" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '3rem' }}>
+                
+                {/* Header */}
+                <div style={{ textAlign: 'left' }}>
+                    <h1 style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>My Dashboard</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: '500', marginTop: '0.2rem', margin: 0 }}>
+                        Welcome back! Here's your academic overview.
+                    </p>
+                </div>
+
+                {/* Profile Hero Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass-card"
+                    style={{
+                        background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4c1d95 100%)',
+                        border: 'none',
+                        borderRadius: '20px',
+                        padding: '2rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2rem',
+                        flexWrap: 'wrap',
+                        position: 'relative',
+                        overflow: 'hidden'
+                    }}
+                >
+                    {/* Background decoration */}
+                    <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '180px', height: '180px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
+                    <div style={{ position: 'absolute', bottom: '-50px', right: '100px', width: '120px', height: '120px', background: 'rgba(255,255,255,0.04)', borderRadius: '50%' }} />
+
+                    {/* Avatar */}
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                            width: '100px',
+                            height: '100px',
+                            borderRadius: '50%',
+                            background: picUrl ? 'transparent' : 'rgba(255,255,255,0.15)',
+                            border: '3px solid rgba(255,255,255,0.4)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            overflow: 'hidden'
+                        }}>
+                            {picUrl ? (
+                                <img src={picUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                                <User size={44} color="rgba(255,255,255,0.7)" />
+                            )}
+                        </div>
+                        <label htmlFor="pic-upload" style={{
+                            position: 'absolute',
+                            bottom: '2px',
+                            right: '2px',
+                            background: 'white',
+                            color: '#8b5cf6',
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                            border: '2px solid rgba(255,255,255,0.6)'
+                        }}>
+                            <Camera size={12} />
                             <input type="file" id="pic-upload" hidden onChange={handlePicUpload} accept="image/*" />
                         </label>
-                    </motion.div>
-                    <div>
-                        <motion.h1 
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="premium-text"
-                            style={{ fontSize: '1.85rem', color: '#1a2a6c', marginBottom: '0.3rem' }}
-                        >
-                            Namaste, {user?.name} 🙏
-                        </motion.h1>
-                        <motion.p 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            style={{ color: '#64748b', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}
-                        >
-                            <span style={{ background: '#b21f1f', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '800' }}>CLASS {profile?.className}</span>
-                            <span style={{ fontWeight: '600' }}>ID: {user?.username}</span>
-                        </motion.p>
                     </div>
-                </header>
 
+                    {/* Info */}
+                    <div style={{ flex: 1, textAlign: 'left', minWidth: '180px' }}>
+                        <h2 style={{ color: 'white', fontSize: '1.6rem', fontWeight: '800', margin: '0 0 0.4rem 0' }}>
+                            {user?.name || '—'}
+                        </h2>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+                            <span style={{ background: 'rgba(255,255,255,0.18)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700' }}>
+                                Class {profile?.className || '—'}
+                            </span>
+                            <span style={{ background: 'rgba(255,255,255,0.18)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700' }}>
+                                ID: {user?.username || '—'}
+                            </span>
+                            {profile?.rollNumber && (
+                                <span style={{ background: 'rgba(255,255,255,0.18)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700' }}>
+                                    Roll No: {profile.rollNumber}
+                                </span>
+                            )}
+                        </div>
+                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.88rem', fontWeight: '500', margin: '0.8rem 0 0' }}>
+                            {uploading ? '⏳ Uploading photo...' : 'Click the camera icon above to update your photo'}
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Main Content Grid */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                    <motion.div 
-                        whileHover={{ y: -3 }}
-                        className="glass-card" 
-                        style={{ padding: '1.5rem', background: 'rgba(255, 255, 255, 0.8)' }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem', borderBottom: '2px solid rgba(26, 42, 108, 0.1)', paddingBottom: '0.6rem' }}>
-                            <User size={20} color="#1a2a6c" />
-                            <h3 style={{ fontSize: '1.2rem', color: '#1a2a6c' }}>Student Profile</h3>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.9rem' }}>
-                            <p style={{ display: 'flex', justifyContent: 'space-between' }}><strong>Father's Name:</strong> <span style={{ color: '#475569' }}>{profile?.fatherName}</span></p>
-                            <p style={{ display: 'flex', justifyContent: 'space-between' }}><strong>Mother's Name:</strong> <span style={{ color: '#475569' }}>{profile?.motherName}</span></p>
-                            <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <strong>Parent Contact:</strong> 
-                                <span style={{ color: '#475569', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Phone size={12} /> {profile?.contactNumber}</span>
-                            </p>
-                            <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <strong>Registered Email:</strong> 
-                                <span style={{ color: '#475569', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Mail size={12} /> {profile?.emailId}</span>
-                            </p>
-                            <p style={{ display: 'flex', justifyContent: 'space-between' }}><strong>Admission Date:</strong> <span style={{ color: '#475569' }}>{profile?.admissionDate ? new Date(profile.admissionDate).toLocaleDateString() : 'N/A'}</span></p>
-                        </div>
-                    </motion.div>
                     
-                    <motion.div 
-                        whileHover={{ y: -3 }}
-                        className="glass-card" 
-                        style={{ padding: '1.5rem', background: 'rgba(255, 255, 255, 0.8)' }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.2rem', borderBottom: '2px solid rgba(26, 42, 108, 0.1)', paddingBottom: '0.6rem' }}>
-                            <GraduationCap size={20} color="#1a2a6c" />
-                            <h3 style={{ fontSize: '1.2rem', color: '#1a2a6c' }}>Academic Status</h3>
+                    {/* Student Profile Card */}
+                    <div className="glass-card" style={{ padding: '1.5rem', border: '1.5px solid var(--border-color)', backgroundColor: 'var(--card-bg)', borderRadius: '20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.2rem', textAlign: 'left' }}>
+                            <div style={{ background: '#faf5ff', color: '#8b5cf6', padding: '7px', borderRadius: '10px' }}>
+                                <User size={16} />
+                            </div>
+                            <h3 style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>Student Profile</h3>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.9rem' }}>
-                            <p style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-                                <MapPin size={16} color="#b21f1f" style={{ marginTop: '2px' }} />
-                                <span><strong>Current Address:</strong> <br/><span style={{ color: '#475569', fontSize: '0.85rem' }}>{profile?.currentAddress}</span></span>
-                            </p>
-                            <p style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-                                <MapPin size={16} color="#b21f1f" style={{ marginTop: '2px' }} />
-                                <span><strong>Permanent Address:</strong> <br/><span style={{ color: '#475569', fontSize: '0.85rem' }}>{profile?.permanentAddress}</span></span>
-                            </p>
-                            <p style={{ display: 'flex', justifyContent: 'space-between' }}><strong>Assigned Roll No:</strong> <span style={{ background: '#1a2a6c', color: 'white', padding: '0.2rem 0.8rem', borderRadius: '4px', fontSize: '0.8rem' }}>{profile?.rollNumber || 'UPDATING'}</span></p>
-                            
-                            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.8rem' }}>
-                                <motion.button whileHover={{ scale: 1.02 }} className="btn btn-primary" style={{ flex: 1, padding: '0.5rem' }} onClick={() => window.location.href='/student/results'}>Exam Reports</motion.button>
-                                <motion.button whileHover={{ scale: 1.02 }} className="btn btn-secondary" style={{ flex: 1, padding: '0.5rem' }} onClick={() => window.location.href='/student/leaves'}>Request Leave</motion.button>
+                        <InfoRow icon={User} label="Father's Name" value={profile?.fatherName} accent="#8b5cf6" />
+                        <InfoRow icon={User} label="Mother's Name" value={profile?.motherName} accent="#ec4899" />
+                        <InfoRow icon={Phone} label="Parent Contact" value={profile?.contactNumber} accent="#06b6d4" />
+                        <InfoRow icon={Mail} label="Email Address" value={profile?.emailId} accent="#f59e0b" />
+                        <InfoRow icon={CalendarDays} label="Admission Date" value={profile?.admissionDate ? new Date(profile.admissionDate).toLocaleDateString('en-IN') : null} accent="#10b981" />
+                    </div>
+
+                    {/* Academic Status + Quick Actions */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                        <div className="glass-card" style={{ padding: '1.5rem', border: '1.5px solid var(--border-color)', backgroundColor: 'var(--card-bg)', borderRadius: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.2rem', textAlign: 'left' }}>
+                                <div style={{ background: '#e0f2fe', color: '#0284c7', padding: '7px', borderRadius: '10px' }}>
+                                    <GraduationCap size={16} />
+                                </div>
+                                <h3 style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>Academic Info</h3>
+                            </div>
+                            <InfoRow icon={BookOpen} label="Medium" value={profile?.medium} accent="#8b5cf6" />
+                            <InfoRow icon={Hash} label="Roll Number" value={profile?.rollNumber || 'Updating...'} accent="#ea580c" />
+                            <InfoRow icon={MapPin} label="Current Address" value={profile?.currentAddress} accent="#ef4444" />
+                            <InfoRow icon={MapPin} label="Permanent Address" value={profile?.permanentAddress} accent="#64748b" />
+                        </div>
+
+                        {/* Quick Actions */}
+                        <div className="glass-card" style={{ padding: '1.5rem', border: '1.5px solid var(--border-color)', backgroundColor: 'var(--card-bg)', borderRadius: '20px' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-primary)', margin: '0 0 1rem 0', textAlign: 'left' }}>Quick Actions</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                <QuickAction label="View My Results" icon={FileText} color="#8b5cf6" bg="#faf5ff" path="/student/results" />
+                                <QuickAction label="My Fee Details" icon={FileText} color="#16a34a" bg="#dcfce7" path="/student/fees" />
+                                <QuickAction label="Apply for Leave" icon={CalendarDays} color="#ea580c" bg="#fff3eb" path="/student/leaves" />
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
-            </motion.div>
+            </div>
+
+            <style>{`
+                .student-action-btn:hover {
+                    border-color: #8b5cf6 !important;
+                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+                    transform: translateX(4px);
+                }
+            `}</style>
         </div>
     );
 };

@@ -8,7 +8,7 @@ const {
     updateTeacher, deleteTeacher, updateStudent, deleteStudent,
     getDashboardStats, updateSchoolSettings, 
     addPrincipalInfo, updatePrincipalInfo, getPrincipalInfo, deletePrincipalInfo,
-    getFeesByClass, saveFeeRecord, addFeePayment,
+    getFeesByClass, saveFeeRecord, addFeePayment, getFeesOverview,
     addTopper, getToppers, deleteTopper,
     addMoment, getMoments, deleteMoment,
     getFeeStructures, updateFeeStructure, updateApplicationStatus, generateAINotice
@@ -64,6 +64,7 @@ router.put('/principal-info/:id', upload.single('founderPic'), updatePrincipalIn
 router.delete('/principal-info/:id', deletePrincipalInfo);
 
 // Fee Management
+router.get('/fees/overview', getFeesOverview);
 router.get('/fees/class/:className', getFeesByClass);
 router.post('/fees/student/:studentId', saveFeeRecord);
 // router.put('/fees/student/:studentId', saveFeeRecord); // Duplicate removed

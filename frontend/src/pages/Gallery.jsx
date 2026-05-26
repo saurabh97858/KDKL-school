@@ -4,6 +4,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, SearchX } from 'lucide-react';
 import { Lightbox, ScrollToTop } from '../components/GlobalUI';
+import Footer from '../components/Footer';
 
 const Gallery = () => {
     const [images, setImages] = useState([]);
@@ -17,7 +18,7 @@ const Gallery = () => {
                 const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/public/gallery');
                 setImages(data);
             } catch (err) { 
-                console.error(err); 
+                console.error('Error fetching gallery:', err); 
             } finally {
                 setLoading(false);
             }
@@ -25,8 +26,19 @@ const Gallery = () => {
         fetchGallery();
     }, []);
 
-    const categories = ['All', 'Slider', 'Environment', 'Functions'];
-    const filteredImages = filter === 'All' ? images : images.filter(img => img.category === filter);
+    const categories = ['All', 'Events', 'Activities', 'Campus', 'Achievements'];
+    
+    const getFilteredImages = () => {
+        if (filter === 'All') return images;
+        return images.filter(img => {
+            const cat = img.category?.toLowerCase() || '';
+            if (filter === 'Events') return cat === 'events' || cat === 'functions';
+            if (filter === 'Activities') return cat === 'activities';
+            if (filter === 'Campus') return cat === 'campus' || cat === 'environment';
+            if (filter === 'Achievements') return cat === 'achievements';
+            return cat === filter.toLowerCase();
+        });
+    };
 
     const getPicUrl = (path) => {
         if (!path) return '';
@@ -36,327 +48,185 @@ const Gallery = () => {
 
     const fadeInUp = {
         hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
     };
 
+    const activeFilteredImages = getFilteredImages();
+
     return (
-        <div className="premium-light-page" style={{ backgroundColor: 'var(--bg-home)', minHeight: '100vh', display: 'flex', flexDirection: 'column', transition: 'background-color 0.3s ease, color 0.3s ease' }}>
+        <div style={{ backgroundColor: 'var(--bg-home)', minHeight: '100vh', display: 'flex', flexDirection: 'column', transition: 'background-color 0.3s ease, color 0.3s ease', fontFamily: "'Outfit', sans-serif" }}>
             <Navbar />
             
             {loading ? (
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
-                    <div className="spinner"></div>
-                    <p style={{ marginTop: '1rem', color: 'var(--primary)', fontWeight: '600' }}>Loading School Memories...</p>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70vh' }}>
+                    <div style={{ border: '4px solid var(--border-color)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite' }} className="spinner"></div>
+                    <p style={{ marginTop: '1rem', color: 'var(--primary)', fontWeight: '700' }}>Loading School Memories...</p>
                 </div>
             ) : (
-                <>
-                {/* Aesthetic Background Blobs */}
-            <div className="bg-blob blob-1"></div>
-            <div className="bg-blob blob-2"></div>
- 
-            <div className="gallery-wrapper">
-                {/* Intro Segment */}
-                <div className="intro-section light-glass-panel">
-                    <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-                            <Camera size={40} color="var(--primary)" />
-                        </div>
-                        <h1 className="main-title text-navy">Discover Our Campus</h1>
-                        <div className="divider-line crimson-bg"></div>
-                        <p className="intro-subtitle text-slate">
-                            Explore the vibrant environment, state-of-the-art facilities, and the unforgettable moments that make up life at KDKL.
-                        </p>
-                    </motion.div>
-                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
+                    
+                    {/* Header Banner */}
+                    <section style={{ padding: '5rem 10% 4rem', textAlign: 'center', position: 'relative' }}>
+                        <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
+                            <div style={{ display: 'inline-block', background: 'rgba(26,42,108,0.08)', color: 'var(--primary)', padding: '0.4rem 1rem', borderRadius: '30px', fontWeight: '800', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.8rem' }}>
+                                School Chronicles
+                            </div>
+                            <h1 style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--primary)', margin: '0 0 1rem 0', letterSpacing: '-1px' }}>Discover Our Campus</h1>
+                            <div style={{ height: '4px', width: '60px', background: 'var(--secondary)', margin: '1rem auto', borderRadius: '2px' }}></div>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', maxWidth: '650px', margin: '0 auto', lineHeight: '1.65' }}>
+                                Explore the vibrant environments, student activities, festivals, and key scholastic milestones that represent the life at KDKL.
+                            </p>
+                        </motion.div>
+                    </section>
 
-                {/* Filter Controls */}
-                <motion.div 
-                    className="filter-container"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    {categories.map(cat => (
-                        <button 
-                            key={cat}
-                            onClick={() => setFilter(cat)}
-                            className={`filter-btn ${filter === cat ? 'active' : ''}`}
+                    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 5% 6rem', width: '100%', flex: 1, display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+                        
+                        {/* Filter tabs */}
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}
                         >
-                            {cat}
-                        </button>
-                    ))}
-                </motion.div>
-
-                {/* Gallery Grid */}
-                {filteredImages.length > 0 ? (
-                    <motion.div layout className="gallery-grid">
-                        <AnimatePresence>
-                            {filteredImages.map((img, idx) => (
-                                <motion.div 
-                                    layout
-                                    key={img._id}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    transition={{ duration: 0.4 }}
-                                    className="gallery-card light-glass-panel"
-                                    onClick={() => setLightbox({ open: true, index: idx })}
-                                    style={{ cursor: 'pointer' }}
+                            {categories.map(cat => (
+                                <button 
+                                    key={cat}
+                                    onClick={() => setFilter(cat)}
+                                    style={{
+                                        padding: '0.65rem 1.6rem',
+                                        borderRadius: '50px',
+                                        fontWeight: '700',
+                                        fontSize: '0.92rem',
+                                        cursor: 'pointer',
+                                        border: '1.5px solid var(--border-color)',
+                                        backgroundColor: filter === cat ? 'var(--primary)' : 'var(--card-bg)',
+                                        color: filter === cat ? 'white' : 'var(--text-primary)',
+                                        boxShadow: filter === cat ? '0 6px 15px rgba(0,0,0,0.15)' : 'none',
+                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                    }}
                                 >
-                                    <div className="card-top-accent theme-gradient"></div>
-                                    <div className="image-wrapper">
-                                        <img 
-                                            src={getPicUrl(img.imageUrl)} 
-                                            alt={img.title} 
-                                            loading="lazy"
-                                        />
-                                        <div className="image-overlay">
-                                            <span className="overlay-badge">{img.category}</span>
-                                            <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: '2rem', opacity: 0, transition: 'opacity 0.3s' }} className="zoom-icon">🔍</span>
-                                        </div>
-                                    </div>
-                                    <div className="card-info light-info">
-                                        <h3 className="text-navy">{img.title}</h3>
-                                        <span className="category-tag">{img.category}</span>
-                                    </div>
-                                </motion.div>
+                                    {cat}
+                                </button>
                             ))}
-                        </AnimatePresence>
-                    </motion.div>
-                ) : (
-                    <motion.div 
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        className="empty-state light-glass-panel"
-                    >
-                        <SearchX size={50} color="#94a3b8" />
-                        <h3 className="text-navy">No Moments Found</h3>
-                        <p className="text-slate">There are currently no photos in the '{filter}' category.</p>
-                    </motion.div>
-                )}
-            </div>
+                        </motion.div>
+
+                        {/* Photos Grid */}
+                        {activeFilteredImages.length > 0 ? (
+                            <motion.div layout style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2.5rem', marginBottom: '2rem' }}>
+                                <AnimatePresence mode="popLayout">
+                                    {activeFilteredImages.map((img, idx) => (
+                                        <motion.div 
+                                            layout
+                                            key={img._id || idx}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ duration: 0.4 }}
+                                            onClick={() => setLightbox({ open: true, index: idx })}
+                                            style={{
+                                                backgroundColor: 'var(--card-bg)',
+                                                border: '1px solid var(--border-color)',
+                                                borderRadius: '24px',
+                                                overflow: 'hidden',
+                                                cursor: 'pointer',
+                                                boxShadow: '0 10px 30px rgba(0,0,0,0.03)',
+                                                transition: 'all 0.3s ease'
+                                            }}
+                                            className="gallery-grid-card"
+                                        >
+                                            <div style={{ position: 'relative', width: '100%', height: '260px', overflow: 'hidden' }}>
+                                                <img 
+                                                    src={getPicUrl(img.imageUrl)} 
+                                                    alt={img.title} 
+                                                    loading="lazy"
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                                                    className="gallery-card-img"
+                                                />
+                                                <div style={{
+                                                    position: 'absolute',
+                                                    inset: 0,
+                                                    background: 'linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 60%)',
+                                                    display: 'flex',
+                                                    alignItems: 'flex-end',
+                                                    padding: '1.5rem',
+                                                    opacity: 1
+                                                }}>
+                                                    <span style={{
+                                                        background: 'rgba(255,255,255,0.2)',
+                                                        backdropFilter: 'blur(8px)',
+                                                        color: 'white',
+                                                        padding: '0.4rem 1rem',
+                                                        borderRadius: '20px',
+                                                        fontSize: '0.78rem',
+                                                        fontWeight: '700',
+                                                        letterSpacing: '0.5px',
+                                                        textTransform: 'uppercase',
+                                                        border: '1px solid rgba(255,255,255,0.3)'
+                                                    }}>{img.category || 'General'}</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ padding: '1.5rem', textAlign: 'left', backgroundColor: 'var(--card-bg)', transition: 'background-color 0.3s' }}>
+                                                <h3 style={{ margin: '0 0 0.3rem 0', fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{img.title}</h3>
+                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.5px' }}>{img.category || 'School Legacy'}</span>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </motion.div>
+                        ) : (
+                            <motion.div 
+                                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                style={{
+                                    padding: '5rem 2rem',
+                                    textAlign: 'center',
+                                    borderRadius: '24px',
+                                    backgroundColor: 'var(--card-bg)',
+                                    border: '1px solid var(--border-color)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '1rem',
+                                    margin: '0 auto',
+                                    maxWidth: '500px',
+                                    width: '100%',
+                                    boxShadow: '0 10px 30px rgba(0,0,0,0.02)'
+                                }}
+                            >
+                                <SearchX size={50} color="var(--text-secondary)" />
+                                <h3 style={{ fontSize: '1.6rem', color: 'var(--text-primary)', margin: 0, fontWeight: '800' }}>No Moments Found</h3>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', margin: 0 }}>There are currently no photos uploaded in the '{filter}' category.</p>
+                            </motion.div>
+                        )}
+                    </div>
+                </div>
+            )}
             
             {/* Lightbox */}
             {lightbox.open && (
                 <Lightbox
-                    images={filteredImages.map(img => getPicUrl(img.imageUrl))}
+                    images={activeFilteredImages.map(img => getPicUrl(img.imageUrl))}
                     startIndex={lightbox.index}
                     onClose={() => setLightbox({ open: false, index: 0 })}
                 />
             )}
+            
             <ScrollToTop />
-
-            <footer className="elegant-footer">
-                <h2>KDKL SHASTRI INTER COLLEGE</h2>
-                <p>Empowering the next generation with knowledge, morality, and ambition.</p>
-                <div className="footer-bottom">
-                    <p>&copy; 2026 KDKL. All Rights Reserved.</p>
-                </div>
-            </footer>
-
-                </>
-            )}
+            <Footer />
+            
             <style>{`
-                .premium-light-page {
-                    background-color: var(--bg-home);
-                    min-height: 100vh;
-                    font-family: 'Inter', system-ui, sans-serif;
-                    position: relative;
-                    overflow: hidden;
-                    display: flex;
-                    flex-direction: column;
-                    transition: background-color 0.3s ease, color 0.3s ease;
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
                 }
-                .loading-state {
-                    display: flex; justify-content: center; align-items: center; height: 100vh;
-                    background: var(--bg-home); color: var(--primary); font-size: 1.5rem; font-weight: bold;
+                .gallery-grid-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 20px 45px rgba(0,0,0,0.12) !important;
                 }
-
-                /* Aesthetic Light Blobs */
-                .bg-blob {
-                    position: absolute;
-                    border-radius: 50%;
-                    filter: blur(100px);
-                    z-index: 0;
-                    opacity: 0.35;
-                    animation: floatLight 15s infinite ease-in-out alternate;
-                }
-                .blob-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(26,42,108,0.15) 0%, transparent 70%); top: 0; left: -200px; }
-                .blob-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(178,31,31,0.1) 0%, transparent 70%); bottom: 10%; right: -150px; animation-delay: -5s; }
-                
-                @keyframes floatLight {
-                    0% { transform: translateY(0) scale(1) rotate(0deg); }
-                    100% { transform: translateY(-30px) scale(1.05) rotate(5deg); }
-                }
-
-                /* Light Glassmorphism */
-                .light-glass-panel {
-                    background: var(--glass);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid var(--glass-border);
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-                }
-
-                /* Text Colors */
-                .text-navy { color: var(--primary); }
-                .text-slate { color: var(--text-secondary); }
-                .crimson-bg { background: var(--secondary); }
-
-                /* Intro Section */
-                .gallery-wrapper {
-                    flex: 1;
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 0 5%;
-                    position: relative;
-                    z-index: 10;
-                    width: 100%;
-                }
-                .intro-section {
-                    margin: 2rem auto 2rem;
-                    max-width: 700px;
-                    padding: 2rem 1.5rem;
-                    text-align: center;
-                    border-radius: 24px;
-                }
-                .main-title { font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; margin: 0; line-height: 1.1; }
-                .intro-subtitle { font-size: 1.15rem; line-height: 1.6; max-width: 550px; margin: 0 auto; }
-                .divider-line { height: 4px; width: 60px; margin: 1.2rem auto; border-radius: 2px; }
-
-                /* Filter Controls */
-                .filter-container {
-                    display: flex;
-                    justify-content: center;
-                    gap: 1rem;
-                    flex-wrap: wrap;
-                    margin-bottom: 2rem;
-                }
-                .filter-btn {
-                    padding: 0.6rem 1.5rem;
-                    border-radius: 30px;
-                    border: 1px solid rgba(255,255,255,0.6);
-                    background: rgba(255, 255, 255, 0.5);
-                    backdrop-filter: blur(10px);
-                    color: #475569;
-                    font-weight: 600;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .filter-btn:hover {
-                    background: rgba(255, 255, 255, 0.9);
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-                }
-                .filter-btn.active {
-                    background: linear-gradient(135deg, #1a2a6c 0%, #3b5998 100%);
-                    color: white;
-                    border-color: transparent;
-                    box-shadow: 0 10px 20px rgba(26, 42, 108, 0.25);
-                }
-
-                /* Gallery Grid */
-                .gallery-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                    gap: 2.5rem;
-                    margin-bottom: 6rem;
-                }
-                .gallery-card {
-                    padding: 0;
-                    border-radius: 24px;
-                    overflow: hidden;
-                    position: relative;
-                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .card-top-accent {
-                    position: absolute;
-                    top: 0; left: 0; right: 0;
-                    height: 5px;
-                    transform: scaleX(0);
-                    transition: transform 0.4s ease;
-                    transform-origin: left;
-                    z-index: 5;
-                }
-                .theme-gradient { background: linear-gradient(90deg, #1a2a6c, #b21f1f); }
-                .gallery-card:hover {
-                    transform: translateY(-12px);
-                    box-shadow: 0 25px 50px rgba(26,42,108,0.15);
-                }
-                .gallery-card:hover .card-top-accent { transform: scaleX(1); }
-                
-                .image-wrapper {
-                    position: relative;
-                    width: 100%;
-                    height: 260px;
-                    overflow: hidden;
-                }
-                .image-wrapper img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.6s ease;
-                }
-                .gallery-card:hover .image-wrapper img {
+                .gallery-grid-card:hover .gallery-card-img {
                     transform: scale(1.08);
                 }
-                
-                .image-overlay {
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 50%);
-                    opacity: 0;
-                    transition: opacity 0.4s ease;
-                    display: flex;
-                    align-items: flex-end;
-                    padding: 1.5rem;
-                }
-                .gallery-card:hover .image-overlay { opacity: 1; }
-                
-                .overlay-badge {
-                    background: rgba(255,255,255,0.2);
-                    backdrop-filter: blur(8px);
-                    color: white;
-                    padding: 0.4rem 1rem;
-                    border-radius: 20px;
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    letter-spacing: 1px;
-                    text-transform: uppercase;
-                    border: 1px solid rgba(255,255,255,0.3);
-                }
-
-                .card-info.light-info { padding: 1.5rem; background: var(--card-bg); transition: background 0.3s ease; }
-                .card-info h3 { margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                .category-tag { font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-
-                /* Empty State */
-                .empty-state {
-                    padding: 5rem 2rem;
-                    text-align: center;
-                    border-radius: 24px;
-                    margin-bottom: 6rem;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 1rem;
-                }
-                .empty-state h3 { font-size: 1.8rem; margin: 0; }
-                .empty-state p { font-size: 1.1rem; margin: 0; }
-
-                /* Elegant Footer */
-                .elegant-footer { background: linear-gradient(to right, #0f172a, #1a2a6c); color: white; padding: 5rem 10% 2rem; text-align: center; position: relative; z-index: 10; margin-top: auto;}
-                .elegant-footer h2 { margin: 0 0 1rem 0; font-size: 2rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-                .elegant-footer p { opacity: 0.9; font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-                .footer-bottom { border-top: 1px solid rgba(255,255,255,0.3); padding-top: 2rem; }
-                .footer-bottom p { font-size: 0.9rem; margin: 0; opacity: 0.8; }
-
-                @media (max-width: 768px) {
-                    .intro-section { margin-top: 6rem; padding: 3rem 1.5rem; }
-                    .main-title { font-size: 2.8rem; }
-                    .filter-container { flex-direction: column; align-items: stretch; padding: 0 2rem; }
-                    .filter-btn { text-align: center; }
+                body.dark .gallery-grid-card:hover {
+                    box-shadow: 0 20px 45px rgba(0,0,0,0.3) !important;
                 }
             `}</style>
         </div>

@@ -4,34 +4,34 @@
   --primary: #1a2a6c;
   --secondary: #b21f1f;
   --accent: #fdbb2d;
-  --bg-light: #f8f9fa;
+  --bg-light: #f8fafc;
   --bg-dashboard: #fefce8; /* Light Yellow Dashboard */
   --bg-dark: #121212;
-  --bg-home: #fdf6b2;
+  --bg-home: #f8fafc;
   --card-bg: #ffffff;
   --border-color: #cbd5e1;
-  --navbar-bg: #fffde7;
-  --glass: rgba(255, 255, 255, 0.6);
+  --navbar-bg: #ffffff;
+  --glass: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(255, 255, 255, 0.4);
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a4a4a;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
 }
 
 body.dark {
-  --primary: #818cf8;
-  --secondary: #f43f5e;
+  --primary: #ea580c;
+  --secondary: #f97316;
   --accent: #fbbf24;
-  --bg-light: #0f172a;
+  --bg-light: #0d1321;
   --bg-dashboard: #0b1329;
-  --bg-dark: #020617;
-  --bg-home: #0f172a;
-  --card-bg: #1e293b;
-  --border-color: #334155;
-  --navbar-bg: #1e293b;
-  --glass: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --bg-dark: #070a13;
+  --bg-home: #070a13;
+  --card-bg: #101726;
+  --border-color: #1e293b;
+  --navbar-bg: #0d1321;
+  --glass: rgba(16, 23, 38, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.05);
   --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
+  --text-secondary: #94a3b8;
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -99,7 +99,13 @@ h1, h2, h3, h4 {
 .btn-primary:hover {
   opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(26, 42, 108, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+body.dark .btn-primary {
+  box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+}
+body.dark .btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45);
 }
 
 .btn-secondary {
@@ -126,20 +132,20 @@ h1, h2, h3, h4 {
 .nav--hide { transform: translateY(-100%); }
 
 .login-btn-premium {
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     padding: 0.8rem 1.8rem;
     border-radius: 50px;
     text-decoration: none;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(26, 42, 108, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     display: inline-block;
 }
 
 .login-btn-premium:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(26, 42, 108, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     filter: brightness(1.1);
 }
 
@@ -362,8 +368,12 @@ h1, h2, h3, h4 {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+}
+body.dark .form-input:focus {
+  background-color: var(--card-bg);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
 }
 
 /* Global dashboard typography overrides */
@@ -400,8 +410,8 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: white;
-    color: #1a2a6c;
+    background: var(--card-bg);
+    color: var(--primary);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-decoration: none;
@@ -409,9 +419,9 @@ h1, h2, h3, h4 {
 
 .social-icon-btn:hover {
     transform: scale(1.15) translateY(-5px);
-    background: #1a2a6c;
+    background: var(--primary);
     color: white;
-    box-shadow: 0 10px 25px rgba(26, 42, 108, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .social-icon-btn:nth-child(1):hover {
@@ -450,7 +460,7 @@ h1, h2, h3, h4 {
     border-left-color: var(--primary);
 }
 body.dark .sidebar-link.active-link {
-    background: rgba(129, 140, 248, 0.15);
+    background: rgba(234, 88, 12, 0.15);
 }
 
 .logout-btn-sidebar {
@@ -595,13 +605,17 @@ body.dark [style*="background-color:rgba(255, 255, 255"] {
   background-color: var(--card-bg) !important;
 }
 
+/* ===== DARK MODE HARDCODED COLOR OVERRIDES ===== */
+
+/* Navy blue headings → orange in dark mode */
 body.dark [style*="color: #1a2a6c"],
 body.dark [style*="color:#1a2a6c"],
 body.dark [style*="color: rgb(26, 42, 108)"],
 body.dark [style*="color:rgb(26, 42, 108)"] {
-  color: var(--text-primary) !important;
+  color: var(--primary) !important;
 }
 
+/* Crimson/red → secondary orange in dark mode */
 body.dark [style*="color: #b21f1f"],
 body.dark [style*="color:#b21f1f"],
 body.dark [style*="color: rgb(178, 31, 31)"],
@@ -609,6 +623,7 @@ body.dark [style*="color:rgb(178, 31, 31)"] {
   color: var(--secondary) !important;
 }
 
+/* Muted gray text */
 body.dark [style*="color: #64748b"],
 body.dark [style*="color:#64748b"],
 body.dark [style*="color: rgb(100, 116, 139)"],
@@ -620,10 +635,50 @@ body.dark [style*="color:rgb(102, 102, 102)"],
 body.dark [style*="color: #999"],
 body.dark [style*="color:#999"],
 body.dark [style*="color: rgb(153, 153, 153)"],
-body.dark [style*="color:rgb(153, 153, 153)"] {
+body.dark [style*="color:rgb(153, 153, 153)"],
+body.dark [style*="color: #475569"],
+body.dark [style*="color:#475569"],
+body.dark [style*="color: rgb(71, 85, 105)"],
+body.dark [style*="color:rgb(71, 85, 105)"] {
   color: var(--text-secondary) !important;
 }
 
+/* Green campus color stays green */
+body.dark [style*="color: #138808"],
+body.dark [style*="color:#138808"] {
+  color: #22c55e !important;
+}
+
+/* Dark background overrides: light card-bg boxes become dark */
+body.dark [style*="backgroundColor: rgb(248, 250, 252)"],
+body.dark [style*="backgroundColor:rgb(248, 250, 252)"],
+body.dark [style*="background-color: rgb(248, 250, 252)"],
+body.dark [style*="background-color:rgb(248, 250, 252)"] {
+  background-color: var(--bg-light) !important;
+  background: var(--bg-light) !important;
+}
+
+/* Transparent light backgrounds → dark card bg */
+body.dark [style*="rgba(26, 42, 108, 0.08)"],
+body.dark [style*="rgba(26,42,108,0.08)"] {
+  background: rgba(234, 88, 12, 0.12) !important;
+}
+body.dark [style*="rgba(178, 31, 31, 0.08)"],
+body.dark [style*="rgba(178,31,31,0.08)"] {
+  background: rgba(249, 115, 22, 0.12) !important;
+}
+body.dark [style*="rgba(19, 136, 8, 0.08)"],
+body.dark [style*="rgba(19,136,8,0.08)"] {
+  background: rgba(34, 197, 94, 0.12) !important;
+}
+body.dark [style*="rgba(253, 187, 45, 0.12)"],
+body.dark [style*="rgba(253,187,45,0.12)"],
+body.dark [style*="rgba(253, 187, 45, 0.15)"],
+body.dark [style*="rgba(253,187,45,0.15)"] {
+  background: rgba(251, 191, 36, 0.15) !important;
+}
+
+/* Dashboard table rows */
 body.dark .dashboard-content table tr[style*="background: #f1f5f9"],
 body.dark .dashboard-content table tr[style*="background:#f1f5f9"],
 body.dark .dashboard-content table tr[style*="background: rgb(241, 245, 249)"],
@@ -631,7 +686,7 @@ body.dark .dashboard-content table tr[style*="background:rgb(241, 245, 249)"] {
   background: var(--bg-light) !important;
 }
 
-/* High-contrast status badge & button overrides for dark mode */
+/* Status badge overrides */
 body.dark [style*="rgb(220, 252, 231)"],
 body.dark [style*="rgb(220,252,231)"],
 body.dark [style*="background-color: rgb(220, 252, 231)"],
@@ -664,3 +719,30 @@ body.dark [style*="background:rgb(254,249,195)"] {
   background: rgba(234, 179, 8, 0.2) !important;
   color: #facc15 !important;
 }
+
+/* ===== DARK MODE PUBLIC PAGE OVERRIDES ===== */
+
+/* Hero section title color */
+body.dark h1[style*="color: var(--primary)"],
+body.dark h2[style*="color: var(--primary)"],
+body.dark h3[style*="color: var(--primary)"],
+body.dark h4[style*="color: var(--primary)"] {
+  color: var(--primary) !important;
+}
+
+/* Cards and stat blocks */
+body.dark [style*="backgroundColor: var(--card-bg)"],
+body.dark [style*="backgroundColor: var(--navbar-bg)"] {
+  transition: background-color 0.3s ease !important;
+}
+
+/* Admission banner gradient in dark mode */
+body.dark [style*="linear-gradient(135deg, var(--primary)"] {
+  background: linear-gradient(135deg, #c2410c, #ea580c) !important;
+}
+
+/* Notification ticker dark mode */
+body.dark [style*="linear-gradient(to right, var(--secondary)"] {
+  background: linear-gradient(to right, #c2410c, #b45309) !important;
+}
+

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Menu, X, Sun, Moon } from 'lucide-react';
 
 const Navbar = () => {
@@ -14,8 +14,14 @@ const Navbar = () => {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
     const location = useLocation();
+    const navigate = useNavigate();
 
-    const isActive = (path) => location.pathname === path;
+    const isActive = (link) => {
+        if (link.hash) {
+            return location.pathname === '/' && location.hash === link.hash;
+        }
+        return location.pathname === link.to;
+    };
 
     useEffect(() => {
         if (isDark) {
@@ -55,10 +61,29 @@ const Navbar = () => {
     const navLinks = [
         { to: '/', label: 'Home' },
         { to: '/about', label: 'About Us' },
+        { to: '/', hash: '#academics', label: 'Academics' },
+        { to: '/', hash: '#campus', label: 'Campus' },
         { to: '/gallery', label: 'Gallery' },
         { to: '/admission', label: 'Admission' },
-        ...(settings?.showFeeStructureInNavbar ? [{ to: '/fee-structure', label: 'Fee Structure' }] : []),
+        { to: '/', hash: '#contact', label: 'Contact' },
     ];
+
+    const handleLinkClick = (e, link) => {
+        if (link.hash) {
+            e.preventDefault();
+            if (location.pathname === '/') {
+                const el = document.querySelector(link.hash);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                    // Update window hash
+                    window.history.pushState(null, '', link.hash);
+                }
+            } else {
+                navigate('/', { state: { scrollTo: link.hash } });
+            }
+        }
+        setMenuOpen(false);
+    };
 
     return (
         <nav className={`navbar premium-navbar ${show ? 'nav--show' : 'nav--hide'}`}>
@@ -72,11 +97,21 @@ const Navbar = () => {
             
             {/* Desktop Nav */}
             <ul className="nav-links desktop-nav" style={{ justifyContent: 'center', margin: 0 }}>
-                {navLinks.map(link => (
-                    <li key={link.to}>
-                        <Link to={link.to} className={isActive(link.to) ? 'active-link' : ''}>
-                            {link.label}
-                        </Link>
+                {navLinks.map((link, idx) => (
+                    <li key={idx}>
+                        {link.hash ? (
+                            <a 
+                                href={link.hash} 
+                                onClick={(e) => handleLinkClick(e, link)}
+                                className={isActive(link) ? 'active-link' : ''}
+                            >
+                                {link.label}
+                            </a>
+                        ) : (
+                            <Link to={link.to} className={isActive(link) ? 'active-link' : ''}>
+                                {link.label}
+                            </Link>
+                        )}
                     </li>
                 ))}
             </ul>
@@ -100,10 +135,25 @@ const Navbar = () => {
             {/* Mobile Drawer */}
             {menuOpen && (
                 <div className="mobile-drawer">
-                    {navLinks.map(link => (
-                        <Link key={link.to} to={link.to} className={`mobile-nav-link ${isActive(link.to) ? 'mobile-active' : ''}`}>
-                            {link.label}
-                        </Link>
+                    {navLinks.map((link, idx) => (
+                        link.hash ? (
+                            <a 
+                                key={idx}
+                                href={link.hash}
+                                onClick={(e) => handleLinkClick(e, link)}
+                                className={`mobile-nav-link ${isActive(link) ? 'mobile-active' : ''}`}
+                            >
+                                {link.label}
+                            </a>
+                        ) : (
+                            <Link 
+                                key={idx}
+                                to={link.to} 
+                                className={`mobile-nav-link ${isActive(link) ? 'mobile-active' : ''}`}
+                            >
+                                {link.label}
+                            </Link>
+                        )
                     ))}
                     <Link to="/login" className="mobile-login-btn">Login Portal</Link>
                 </div>
@@ -112,7 +162,7 @@ const Navbar = () => {
             <style>{`
                 .premium-navbar {
                     display: grid;
-                    grid-template-columns: 1fr auto 1fr;
+                    grid-template-columns: auto 1fr auto;
                     align-items: center;
                     padding: 0.8rem 5%;
                     background: var(--navbar-bg);
@@ -162,9 +212,9 @@ const Navbar = () => {
                 .login-btn-premium {
                     background: linear-gradient(135deg, var(--primary), var(--secondary));
                     color: white;
-                    padding: 0.45rem 1rem;
+                    padding: 0.45rem 1.2rem;
                     border-radius: 8px;
-                    font-size: 0.85rem;
+                    font-size: 0.9rem;
                     font-weight: 700;
                     text-decoration: none;
                     transition: all 0.3s ease;
@@ -250,10 +300,10 @@ const Navbar = () => {
                     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
                 }
 
-                @media (max-width: 768px) {
-                    .premium-navbar { grid-template-columns: 1fr auto; padding: 0.6rem 5%; }
-                    .logo h2 { font-size: 1rem !important; }
-                    .logo p { font-size: 0.55rem !important; }
+                @media (max-width: 1024px) {
+                    .premium-navbar { grid-template-columns: auto 1fr auto; padding: 0.6rem 5%; }
+                    .logo h2 { font-size: 1.1rem !important; }
+                    .logo p { font-size: 0.6rem !important; }
                     .desktop-nav { display: none !important; }
                     .hamburger-btn { display: flex !important; margin-left: auto; }
                     .mobile-drawer { display: flex; }
@@ -264,5 +314,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-

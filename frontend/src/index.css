@@ -176,14 +176,7 @@ body.dark .btn-primary:hover {
 
 .slider-track {
   display: flex;
-  width: 300%;
   height: 100%;
-  animation: slide 15s infinite linear;
-}
-
-@keyframes slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-66.66%); }
 }
 
 .slide {
@@ -295,11 +288,18 @@ body.dark .btn-primary:hover {
 }
 
 @media (min-width: 1025px) {
-  .sidebar-open .dashboard-content { margin-left: 260px; }
+  .sidebar-open .dashboard-content { 
+    margin-left: 260px; 
+    width: calc(100% - 260px);
+  }
 }
 
 @media (max-width: 1024px) {
-  .dashboard-content { padding-top: 4.8rem; margin-left: 0; }
+  .dashboard-content { 
+    padding-top: 4.8rem; 
+    margin-left: 0 !important; 
+    width: 100% !important; 
+  }
 }
 
 .stat-grid {

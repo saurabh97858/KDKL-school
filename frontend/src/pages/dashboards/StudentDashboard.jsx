@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
+import { useNavigate } from 'react-router-dom';
 import { User, GraduationCap, MapPin, Phone, Mail, Camera, FileText, CalendarDays, Hash, BookOpen, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const StudentDashboard = () => {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [uploading, setUploading] = useState(false);
 
@@ -62,7 +64,7 @@ const StudentDashboard = () => {
 
     const QuickAction = ({ label, icon: Icon, color, bg, path }) => (
         <button 
-            onClick={() => window.location.href = path}
+            onClick={() => navigate(path)}
             style={{
                 display: 'flex',
                 alignItems: 'center',

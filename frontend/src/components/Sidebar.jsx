@@ -291,7 +291,7 @@ const Sidebar = ({ role }) => {
                         </div>
                         <div>
                             <p style={{ margin: 0, fontSize: '0.7rem', color: isDark ? '#94a3b8' : '#6b7280', fontWeight: '500' }}>Academic Year</p>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: isDark ? '#f8fafc' : '#1f2937', fontWeight: '700' }}>2025-2026</p>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: isDark ? '#f8fafc' : '#1f2937', fontWeight: '700' }}>2026-2027</p>
                         </div>
                     </div>
                 </div>

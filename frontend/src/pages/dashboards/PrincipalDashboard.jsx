@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
+import { useNavigate } from 'react-router-dom';
 import { 
     Users, 
     GraduationCap, 
@@ -29,6 +30,7 @@ import { motion } from 'framer-motion';
 
 const PrincipalDashboard = () => {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [stats, setStats] = useState({ 
         teachers: 0, 
         students: 0, 
@@ -529,7 +531,7 @@ const PrincipalDashboard = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 
                                 {/* Item 1 */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => window.location.href='/principal/applications'}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate('/principal/applications')}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <div style={{ backgroundColor: 'rgba(234, 88, 12, 0.2)', color: '#ea580c', padding: '0.5rem', borderRadius: '8px' }}>
                                             <UserCheck size={16} />
@@ -542,7 +544,7 @@ const PrincipalDashboard = () => {
                                 </div>
 
                                 {/* Item 2 */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => window.location.href='/principal/fees'}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate('/principal/fees')}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <div style={{ backgroundColor: 'rgba(22, 163, 74, 0.2)', color: '#16a34a', padding: '0.5rem', borderRadius: '8px' }}>
                                             <DollarSign size={16} />
@@ -568,7 +570,7 @@ const PrincipalDashboard = () => {
                                 </div>
 
                                 {/* Item 4 */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => window.location.href='/principal/notifications'}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate('/principal/notifications')}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <div style={{ backgroundColor: 'rgba(168, 85, 247, 0.2)', color: '#a855f7', padding: '0.5rem', borderRadius: '8px' }}>
                                             <Calendar size={16} />
@@ -590,7 +592,7 @@ const PrincipalDashboard = () => {
                                 
                                 {/* Add Teacher */}
                                 <div 
-                                    onClick={() => window.location.href='/principal/teachers'}
+                                    onClick={() => navigate('/principal/teachers')}
                                     style={{ 
                                         border: '1.5px solid var(--border-color)', 
                                         borderRadius: '12px', 
@@ -610,7 +612,7 @@ const PrincipalDashboard = () => {
 
                                 {/* Enroll Student */}
                                 <div 
-                                    onClick={() => window.location.href='/principal/add-student'}
+                                    onClick={() => navigate('/principal/add-student')}
                                     style={{ 
                                         border: '1.5px solid var(--border-color)', 
                                         borderRadius: '12px', 
@@ -630,7 +632,7 @@ const PrincipalDashboard = () => {
 
                                 {/* Collect Fees */}
                                 <div 
-                                    onClick={() => window.location.href='/principal/fees'}
+                                    onClick={() => navigate('/principal/fees')}
                                     style={{ 
                                         border: '1.5px solid var(--border-color)', 
                                         borderRadius: '12px', 
@@ -650,7 +652,7 @@ const PrincipalDashboard = () => {
 
                                 {/* Send Notice */}
                                 <div 
-                                    onClick={() => window.location.href='/principal/notifications'}
+                                    onClick={() => navigate('/principal/notifications')}
                                     style={{ 
                                         border: '1.5px solid var(--border-color)', 
                                         borderRadius: '12px', 

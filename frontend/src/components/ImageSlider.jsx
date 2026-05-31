@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const ImageSlider = () => {
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([
+        'https://images.unsplash.com/photo-1523050853051-f750c7582efd?auto=format&fit=crop&w=1200',
+        'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=1200',
+        'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200'
+    ]);
 
     const getPicUrl = (path) => {
         if (!path) return '';
@@ -14,16 +18,10 @@ const ImageSlider = () => {
         const fetchGallery = async () => {
             try {
                 const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/public/gallery');
-                const sliderItems = data.filter(item => !item.category || item.category === 'Slider');
+                const sliderItems = data.filter(item => !item.category || item.category.toLowerCase() === 'slider');
                 
                 if (sliderItems.length > 0) {
                     setImages(sliderItems.map(img => getPicUrl(img.imageUrl)));
-                } else {
-                    setImages([
-                        'https://images.unsplash.com/photo-1523050853051-f750c7582efd?auto=format&fit=crop&w=1200',
-                        'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=1200',
-                        'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200'
-                    ]);
                 }
             } catch (error) {
                 console.error('Error fetching slider:', error);

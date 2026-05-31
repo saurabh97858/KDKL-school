@@ -63,9 +63,9 @@ const Navbar = () => {
     const navLinks = [
         { to: '/', label: 'Home' },
         { to: '/about', label: 'About' },
-        { to: '/', hash: '#academics', label: 'Academics' },
         { to: '/', hash: '#campus', label: 'Campus' },
         { to: '/gallery', label: 'Gallery' },
+        ...(settings?.showFeeStructureInNavbar ? [{ to: '/fee-structure', label: 'Fee Structure' }] : []),
         { to: '/admission', label: 'Admission' },
         { to: '/', hash: '#contact', label: 'Contact' },
     ];

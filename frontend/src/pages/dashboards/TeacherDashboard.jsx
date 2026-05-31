@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, CalendarClock, Users, GraduationCap, Search, Filter, ClipboardList, FileText, CalendarDays, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TeacherDashboard = () => {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [stats, setStats] = useState({ classStudents: 0, pendingLeaves: 0 });
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -101,7 +103,7 @@ const TeacherDashboard = () => {
                         ].map(action => (
                             <button
                                 key={action.label}
-                                onClick={() => window.location.href = action.path}
+                                onClick={() => navigate(action.path)}
                                 className="teacher-quick-btn"
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '8px', padding: '0.65rem 1.2rem',
@@ -205,8 +207,8 @@ const TeacherDashboard = () => {
                                             <td style={{ padding: '0.9rem 1rem', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)' }}>{s.mobileNumber || '—'}</td>
                                             <td style={{ padding: '0.9rem 1rem' }}>
                                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                    <button onClick={() => window.location.href = '/teacher/attendance'} style={{ padding: '0.35rem 0.7rem', background: '#faf5ff', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' }}>Attendance</button>
-                                                    <button onClick={() => window.location.href = '/teacher/results'} style={{ padding: '0.35rem 0.7rem', background: '#e0f2fe', color: '#0284c7', border: '1px solid rgba(2,132,199,0.2)', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' }}>Results</button>
+                                                    <button onClick={() => navigate('/teacher/attendance')} style={{ padding: '0.35rem 0.7rem', background: '#faf5ff', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' }}>Attendance</button>
+                                                    <button onClick={() => navigate('/teacher/results')} style={{ padding: '0.35rem 0.7rem', background: '#e0f2fe', color: '#0284c7', border: '1px solid rgba(2,132,199,0.2)', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' }}>Results</button>
                                                 </div>
                                             </td>
                                         </motion.tr>

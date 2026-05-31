@@ -9,8 +9,8 @@ const {
     getDashboardStats, updateSchoolSettings, 
     addPrincipalInfo, updatePrincipalInfo, getPrincipalInfo, deletePrincipalInfo,
     getFeesByClass, saveFeeRecord, addFeePayment, getFeesOverview,
-    addTopper, getToppers, deleteTopper,
-    addMoment, getMoments, deleteMoment,
+    addTopper, getToppers, deleteTopper, updateTopper,
+    addMoment, getMoments, deleteMoment, updateMoment,
     getFeeStructures, updateFeeStructure, updateApplicationStatus, generateAINotice
 } = require('../controllers/principalController');
 const { protect, authorize } = require('../middleware/authMiddleware');
@@ -73,10 +73,12 @@ router.post('/fees/student/:studentId/payment', addFeePayment);
 // Toppers & Moments
 router.post('/toppers', upload.single('topperPic'), addTopper);
 router.get('/toppers', getToppers);
+router.put('/toppers/:id', upload.single('topperPic'), updateTopper);
 router.delete('/toppers/:id', deleteTopper);
 
 router.post('/moments', upload.single('momentPic'), addMoment);
 router.get('/moments', getMoments);
+router.put('/moments/:id', upload.single('momentPic'), updateMoment);
 router.delete('/moments/:id', deleteMoment);
 
 // Fee Structure

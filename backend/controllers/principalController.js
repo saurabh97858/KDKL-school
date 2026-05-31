@@ -629,10 +629,26 @@ module.exports = {
     // Toppers
     addTopper: async (req, res) => {
         try {
-            const { studentName, className, percentage } = req.body;
+            const { studentName, className, percentage, stream, examTerm } = req.body;
             const imageUrl = req.file ? req.file.path : null;
-            const topper = await Topper.create({ studentName, className, percentage, imageUrl });
+            const topper = await Topper.create({ studentName, className, percentage, stream, examTerm, imageUrl });
             res.status(201).json(topper);
+        } catch (error) { res.status(500).json({ message: error.message }); }
+    },
+    updateTopper: async (req, res) => {
+        try {
+            const topper = await Topper.findById(req.params.id);
+            if (!topper) return res.status(404).json({ message: 'Topper not found' });
+            const { studentName, className, percentage, stream, examTerm, removePic } = req.body;
+            if (studentName) topper.studentName = studentName;
+            if (className) topper.className = className;
+            if (percentage) topper.percentage = percentage;
+            if (stream !== undefined) topper.stream = stream;
+            if (examTerm !== undefined) topper.examTerm = examTerm;
+            if (removePic === 'true') topper.imageUrl = null;
+            else if (req.file) topper.imageUrl = req.file.path;
+            await topper.save();
+            res.json(topper);
         } catch (error) { res.status(500).json({ message: error.message }); }
     },
     getToppers: async (req, res) => {
@@ -655,6 +671,19 @@ module.exports = {
             const imageUrl = req.file ? req.file.path : null;
             const moment = await Moment.create({ title, description, imageUrl });
             res.status(201).json(moment);
+        } catch (error) { res.status(500).json({ message: error.message }); }
+    },
+    updateMoment: async (req, res) => {
+        try {
+            const moment = await Moment.findById(req.params.id);
+            if (!moment) return res.status(404).json({ message: 'Moment not found' });
+            const { title, description, removePic } = req.body;
+            if (title) moment.title = title;
+            if (description) moment.description = description;
+            if (removePic === 'true') moment.imageUrl = null;
+            else if (req.file) moment.imageUrl = req.file.path;
+            await moment.save();
+            res.json(moment);
         } catch (error) { res.status(500).json({ message: error.message }); }
     },
     getMoments: async (req, res) => {

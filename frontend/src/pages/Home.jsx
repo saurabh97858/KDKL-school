@@ -98,23 +98,8 @@ const Home = () => {
         }).slice(0, 6);
     };
 
-    // Fallback static data if database collections are empty
-    const defaultToppers = [
-        { _id: 't1', studentName: 'Tanu Kumari', className: '10', percentage: 95, imageUrl: '', stream: 'Science' },
-        { _id: 't2', studentName: 'Anjali Singh', className: '12', percentage: 93, imageUrl: '', stream: 'Commerce' },
-        { _id: 't3', studentName: 'Rohit Verma', className: '12', percentage: 92, imageUrl: '', stream: 'Science' },
-        { _id: 't4', studentName: 'Sneha Yadav', className: '10', percentage: 91, imageUrl: '', stream: 'English Medium' }
-    ];
-
-    const defaultMoments = [
-        { title: 'Annual Function 2024', description: 'A day full of spectacular performances, art showcases, and academic celebrations.', imageUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600' },
-        { title: 'Sports Day', description: 'Promoting fitness, healthy sportsmanship, athletics, and teamwork across all houses.', imageUrl: 'https://images.unsplash.com/photo-1569930761250-7164ff9c6f2e?auto=format&fit=crop&w=600' },
-        { title: 'Cultural Fest', description: 'Showcasing diverse talents, traditional dances, poetry, and creativity of our students.', imageUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600' },
-        { title: 'Science Exhibition', description: 'Encouraging innovation, logic, and curiosity with practical working models.', imageUrl: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=600' }
-    ];
-
-    const displayToppers = toppers.length > 0 ? toppers : defaultToppers;
-    const displayMoments = moments.length > 0 ? moments : defaultMoments;
+    const displayToppers = toppers;
+    const displayMoments = moments;
 
     // Scroll handlers for Events slider
     const scrollEvents = (direction) => {
@@ -267,9 +252,9 @@ const Home = () => {
                         {/* Founder Image Frame */}
                         <div style={{ position: 'relative', textAlign: 'center' }}>
                             <img 
-                                src={getPicUrl(founder?.imageUrl, 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=500')} 
+                                src={getPicUrl(founder?.imageUrl, '')} 
                                 alt={founder?.name || "Founder"} 
-                                style={{ width: '220px', height: '220px', borderRadius: '24px', objectFit: 'cover', border: '5px solid var(--bg-light)', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }} 
+                                style={{ width: '220px', height: '220px', borderRadius: '24px', objectFit: 'cover', border: '5px solid var(--bg-light)', boxShadow: '0 15px 30px rgba(0,0,0,0.1)', display: founder?.imageUrl ? 'block' : 'none' }} 
                             />
                             <div style={{
                                 position: 'absolute',
@@ -356,12 +341,19 @@ const Home = () => {
                         </div>
 
                         {/* Image Right */}
-                        <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 45px rgba(0,0,0,0.05)' }}>
-                            <img 
-                                src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800" 
-                                alt="Academics" 
-                                style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
-                            />
+                        <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 45px rgba(0,0,0,0.05)', background: 'var(--bg-light)', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {gallery.filter(i => i.category === 'academics' || i.category === 'Academics').length > 0 ? (
+                                <img 
+                                    src={getPicUrl(gallery.find(i => i.category === 'academics' || i.category === 'Academics')?.imageUrl, '')} 
+                                    alt="Academics" 
+                                    style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
+                                />
+                            ) : (
+                                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                                    <BookOpen size={48} style={{ opacity: 0.3 }} />
+                                    <p style={{ marginTop: '1rem', fontSize: '0.9rem' }}>Add Academics images via Admin Panel</p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -441,12 +433,19 @@ const Home = () => {
                         </div>
 
                         {/* Campus Right */}
-                        <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 45px rgba(0,0,0,0.06)' }}>
-                            <img 
-                                src="https://images.unsplash.com/photo-1607237138185-eedd996ece57?auto=format&fit=crop&w=800" 
-                                alt="Modern School Building" 
-                                style={{ width: '100%', height: '360px', objectFit: 'cover' }} 
-                            />
+                        <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 45px rgba(0,0,0,0.06)', background: 'var(--bg-light)', minHeight: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {gallery.filter(i => i.category === 'Campus' || i.category === 'campus' || i.category === 'Environment').length > 0 ? (
+                                <img 
+                                    src={getPicUrl(gallery.find(i => i.category === 'Campus' || i.category === 'campus' || i.category === 'Environment')?.imageUrl, '')} 
+                                    alt="School Building" 
+                                    style={{ width: '100%', height: '360px', objectFit: 'cover' }} 
+                                />
+                            ) : (
+                                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                                    <MapPin size={48} style={{ opacity: 0.3 }} />
+                                    <p style={{ marginTop: '1rem', fontSize: '0.9rem' }}>Add Campus images via Admin Panel</p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -454,21 +453,9 @@ const Home = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                         {gallery.filter(item => item.category === 'Environment' || item.category === 'Campus').slice(0, 4).map((img, idx) => (
                             <div key={img._id || idx} style={{ height: '140px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 20px rgba(0,0,0,0.04)' }}>
-                                <img src={getPicUrl(img.imageUrl, 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=500')} alt={img.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
+                                <img src={getPicUrl(img.imageUrl, '')} alt={img.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
                             </div>
                         ))}
-                        {gallery.filter(item => item.category === 'Environment' || item.category === 'Campus').length === 0 && (
-                            [
-                                'https://images.unsplash.com/photo-1523050853051-f750c7582efd?auto=format&fit=crop&w=400',
-                                'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=400',
-                                'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=400',
-                                'https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=400'
-                            ].map((url, idx) => (
-                                <div key={idx} style={{ height: '140px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 20px rgba(0,0,0,0.04)' }}>
-                                    <img src={url} alt="Campus view" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
-                                </div>
-                            ))
-                        )}
                     </div>
                 </section>
 
@@ -506,7 +493,7 @@ const Home = () => {
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '3.5rem' }}>
-                        {getFilteredGallery().map((img, idx) => (
+                        {getFilteredGallery().length > 0 ? getFilteredGallery().map((img, idx) => (
                             <motion.div
                                 layout
                                 key={img._id || idx}
@@ -519,7 +506,7 @@ const Home = () => {
                                 }}
                             >
                                 <img 
-                                    src={getPicUrl(img.imageUrl, 'https://images.unsplash.com/photo-1523050853051-f750c7582efd?auto=format&fit=crop&w=500')} 
+                                    src={getPicUrl(img.imageUrl, '')} 
                                     alt={img.title || "Gallery Photo"} 
                                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'}
@@ -539,7 +526,11 @@ const Home = () => {
                                     <span style={{ fontSize: '0.75rem', opacity: 0.8, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{img.category || 'General'}</span>
                                 </div>
                             </motion.div>
-                        ))}
+                        )) : (
+                            <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
+                                <p style={{ fontSize: '1rem', fontWeight: '600' }}>No gallery images yet. Add photos via the Admin Panel.</p>
+                            </div>
+                        )}
                     </div>
 
                     <div style={{ textAlign: 'center' }}>
@@ -614,11 +605,17 @@ const Home = () => {
                                         <Star size={14} fill="var(--accent)" /> {t.percentage}%
                                     </div>
 
-                                    <img 
-                                        src={getPicUrl(t.imageUrl, 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300')} 
-                                        alt={t.studentName} 
-                                        style={{ width: '110px', height: '110px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 1.2rem', border: '4px solid var(--bg-light)', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }} 
-                                    />
+                                    {t.imageUrl ? (
+                                        <img 
+                                            src={getPicUrl(t.imageUrl, '')} 
+                                            alt={t.studentName} 
+                                            style={{ width: '110px', height: '110px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 1.2rem', border: '4px solid var(--bg-light)', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }} 
+                                        />
+                                    ) : (
+                                        <div style={{ width: '110px', height: '110px', borderRadius: '50%', background: 'var(--bg-light)', margin: '0 auto 1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid var(--border-color)' }}>
+                                            <GraduationCap size={36} color="var(--primary)" style={{ opacity: 0.5 }} />
+                                        </div>
+                                    )}
                                     
                                     <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', margin: '0 0 0.3rem 0', fontWeight: '800' }}>{t.studentName}</h3>
                                     <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: '600' }}>Class {t.className} {t.stream ? `| ${t.stream}` : ''}</p>
@@ -925,19 +922,6 @@ const Home = () => {
                             </form>
                         </div>
 
-                        {/* Shorter, well-balanced Map container */}
-                        <div style={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border-color)', boxShadow: '0 15px 35px rgba(0,0,0,0.02)', height: '100%' }}>
-                            <iframe 
-                                title="School Map"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.9961623862215!2d77.21832181508272!3d28.62986298241857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd380fffffff%3A0x6bbf6f5f9e2e6005!2sConnaught%20Place%2C%20New%20Delhi%2C%20Delhi%20110001!5e0!3m2!1sen!2sin!4v1653812615438!5m2!1sen!2sin" 
-                                width="100%" 
-                                height="100%" 
-                                style={{ border: 0, height: '280px', minHeight: '280px' }} 
-                                allowFullScreen="" 
-                                loading="lazy" 
-                                referrerPolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </div>
                     </div>
                 </section>
             </main>

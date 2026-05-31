@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
-import { Trophy, Trash2, Plus, Star, GraduationCap, BarChart2, Users, ClipboardList, Filter, X } from 'lucide-react';
+import { Trophy, Trash2, Plus, Star, GraduationCap, BarChart2, Users, ClipboardList, Filter, X, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PrincipalToppers = () => {
@@ -12,6 +12,9 @@ const PrincipalToppers = () => {
         studentName: '', className: '', percentage: '', stream: '', examTerm: ''
     });
     const [file, setFile] = useState(null);
+    const [editingTopper, setEditingTopper] = useState(null); // topper being edited
+    const [editForm, setEditForm] = useState({});
+    const [editFile, setEditFile] = useState(null);
 
     // Filters
     const [filterClass, setFilterClass] = useState('All Classes');
@@ -62,6 +65,28 @@ const PrincipalToppers = () => {
             );
             fetchToppers();
         } catch (err) { console.error(err); }
+    };
+
+    const startEdit = (t) => {
+        setEditingTopper(t._id);
+        setEditForm({ studentName: t.studentName, className: t.className, percentage: t.percentage, stream: t.stream || '', examTerm: t.examTerm || '' });
+        setEditFile(null);
+    };
+
+    const handleEdit = async (e, id) => {
+        e.preventDefault();
+        const data = new FormData();
+        Object.keys(editForm).forEach(key => data.append(key, editForm[key]));
+        if (editFile) data.append('topperPic', editFile);
+        try {
+            await axios.put(
+                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/principal/toppers/${id}`,
+                data,
+                { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            setEditingTopper(null);
+            fetchToppers();
+        } catch (err) { alert(err.response?.data?.message || 'Update failed'); }
     };
 
     // Stats computed from toppers
@@ -257,23 +282,33 @@ const PrincipalToppers = () => {
                                                 {position}
                                             </div>
 
-                                            {/* Delete Button */}
-                                            <button
-                                                onClick={() => handleDelete(t._id)}
-                                                style={{
-                                                    position: 'absolute', top: '12px', right: '12px',
-                                                    background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.15)',
-                                                    borderRadius: '8px', width: '32px', height: '32px',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    cursor: 'pointer', color: '#ef4444',
-                                                    transition: 'all 0.2s ease'
-                                                }}
-                                                title="Delete topper"
-                                                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)'; }}
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
+                                            {/* Edit + Delete Buttons */}
+                                            <div style={{ position: 'absolute', top: '12px', right: '12px', display: 'flex', gap: '6px' }}>
+                                                <button
+                                                    onClick={() => startEdit(t)}
+                                                    style={{
+                                                        background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)',
+                                                        borderRadius: '8px', width: '32px', height: '32px',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        cursor: 'pointer', color: '#3b82f6', transition: 'all 0.2s ease'
+                                                    }}
+                                                    title="Edit topper"
+                                                >
+                                                    <Edit2 size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(t._id)}
+                                                    style={{
+                                                        background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.15)',
+                                                        borderRadius: '8px', width: '32px', height: '32px',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        cursor: 'pointer', color: '#ef4444', transition: 'all 0.2s ease'
+                                                    }}
+                                                    title="Delete topper"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
 
                                             {/* Card Content */}
                                             <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center', paddingTop: '0.5rem' }}>
@@ -330,6 +365,21 @@ const PrincipalToppers = () => {
                                                     )}
                                                 </div>
                                             </div>
+                                            {/* Inline Edit Form */}
+                                            {editingTopper === t._id && (
+                                                <form onSubmit={(e) => handleEdit(e, t._id)} style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.7rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                                                    <input className="form-input" type="text" placeholder="Name" value={editForm.studentName} onChange={e => setEditForm({ ...editForm, studentName: e.target.value })} required style={{ padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+                                                    <input className="form-input" type="text" placeholder="Class" value={editForm.className} onChange={e => setEditForm({ ...editForm, className: e.target.value })} required style={{ padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+                                                    <input className="form-input" type="text" placeholder="Percentage" value={editForm.percentage} onChange={e => setEditForm({ ...editForm, percentage: e.target.value })} required style={{ padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+                                                    <input className="form-input" type="text" placeholder="Stream" value={editForm.stream} onChange={e => setEditForm({ ...editForm, stream: e.target.value })} style={{ padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+                                                    <input className="form-input" type="text" placeholder="Exam/Term" value={editForm.examTerm} onChange={e => setEditForm({ ...editForm, examTerm: e.target.value })} style={{ padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+                                                    <input type="file" accept="image/*" onChange={e => setEditFile(e.target.files[0])} style={{ fontSize: '0.78rem' }} />
+                                                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                                        <button type="submit" style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', background: 'var(--primary)', color: 'white', fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer' }}>Save</button>
+                                                        <button type="button" onClick={() => setEditingTopper(null)} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'transparent', color: 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer' }}>Cancel</button>
+                                                    </div>
+                                                </form>
+                                            )}
                                         </motion.div>
                                     );
                                 })}

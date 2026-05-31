@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
-import { Camera, Trash2, Plus, Image as ImageIcon, X, Sparkles, AlertCircle } from 'lucide-react';
+import { Camera, Trash2, Plus, Image as ImageIcon, X, Sparkles, AlertCircle, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PrincipalMoments = () => {
@@ -13,6 +13,9 @@ const PrincipalMoments = () => {
     const [previewUrl, setPreviewUrl] = useState('');
     const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
     const [deleteConfirm, setDeleteConfirm] = useState({ show: false, id: null });
+    const [editingMoment, setEditingMoment] = useState(null);
+    const [editMomentForm, setEditMomentForm] = useState({ title: '', description: '' });
+    const [editMomentFile, setEditMomentFile] = useState(null);
 
     useEffect(() => {
         fetchMoments();
@@ -85,6 +88,30 @@ const PrincipalMoments = () => {
             console.error(err);
             showToast('Failed to delete moment', 'error');
         }
+    };
+
+    const startEditMoment = (m) => {
+        setEditingMoment(m._id);
+        setEditMomentForm({ title: m.title, description: m.description });
+        setEditMomentFile(null);
+    };
+
+    const handleEditMoment = async (e, id) => {
+        e.preventDefault();
+        const data = new FormData();
+        data.append('title', editMomentForm.title);
+        data.append('description', editMomentForm.description);
+        if (editMomentFile) data.append('momentPic', editMomentFile);
+        try {
+            await axios.put(
+                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/principal/moments/${id}`,
+                data,
+                { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            setEditingMoment(null);
+            showToast('Moment updated successfully!', 'success');
+            fetchMoments();
+        } catch (err) { showToast(err.response?.data?.message || 'Update failed', 'error'); }
     };
 
     return (
@@ -400,15 +427,40 @@ const PrincipalMoments = () => {
                                 >
                                     <Trash2 size={16} />
                                 </button>
-                            </div>
-                            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                                <div>
-                                    <h3 style={{ margin: '0 0 0.6rem 0', color: 'var(--text-primary)', fontSize: '1.25rem', fontWeight: '800', lineHeight: '1.3' }}>{m.title}</h3>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.6', fontWeight: '500' }}>{m.description}</p>
+                    </div>
+                    <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                        <div>
+                            <h3 style={{ margin: '0 0 0.6rem 0', color: 'var(--text-primary)', fontSize: '1.25rem', fontWeight: '800', lineHeight: '1.3' }}>{m.title}</h3>
+                            <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.6', fontWeight: '500' }}>{m.description}</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                            <button
+                                onClick={() => startEditMoment(m)}
+                                style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1.5px solid rgba(59,130,246,0.3)', background: 'rgba(59,130,246,0.05)', color: '#3b82f6', fontWeight: '700', fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
+                            >
+                                <Edit2 size={13} /> Edit
+                            </button>
+                            <button
+                                onClick={() => confirmDelete(m._id)}
+                                style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.08)', color: '#ef4444', fontWeight: '700', fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
+                            >
+                                <Trash2 size={13} /> Delete
+                            </button>
+                        </div>
+                        {editingMoment === m._id && (
+                            <form onSubmit={(e) => handleEditMoment(e, m._id)} style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.7rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                                <input type="text" required value={editMomentForm.title} onChange={e => setEditMomentForm({ ...editMomentForm, title: e.target.value })} placeholder="Title" style={{ padding: '0.55rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem', outline: 'none' }} />
+                                <textarea required rows="2" value={editMomentForm.description} onChange={e => setEditMomentForm({ ...editMomentForm, description: e.target.value })} placeholder="Description" style={{ padding: '0.55rem 0.8rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'var(--bg-light)', color: 'var(--text-primary)', fontSize: '0.85rem', outline: 'none', resize: 'vertical', fontFamily: 'inherit' }} />
+                                <input type="file" accept="image/*" onChange={e => setEditMomentFile(e.target.files[0])} style={{ fontSize: '0.78rem' }} />
+                                <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                    <button type="submit" style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', background: 'var(--primary)', color: 'white', fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer' }}>Save</button>
+                                    <button type="button" onClick={() => setEditingMoment(null)} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1.5px solid var(--border-color)', background: 'transparent', color: 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer' }}>Cancel</button>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </form>
+                        )}
+                    </div>
+                </motion.div>
+            ))}
                 </div>
 
                 {/* Empty State */}

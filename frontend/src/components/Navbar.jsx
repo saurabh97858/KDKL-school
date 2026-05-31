@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GraduationCap, Menu, X, Sun, Moon } from 'lucide-react';
+import { GraduationCap, Menu, X, Sun, Moon, LogOut, LayoutDashboard } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
     const [show, setShow] = useState(true);
@@ -13,6 +14,7 @@ const Navbar = () => {
         if (stored) return stored === 'dark';
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
+    const { user, logout } = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -60,7 +62,7 @@ const Navbar = () => {
 
     const navLinks = [
         { to: '/', label: 'Home' },
-        { to: '/about', label: 'About Us' },
+        { to: '/about', label: 'About' },
         { to: '/', hash: '#academics', label: 'Academics' },
         { to: '/', hash: '#campus', label: 'Campus' },
         { to: '/gallery', label: 'Gallery' },
@@ -117,7 +119,27 @@ const Navbar = () => {
             </ul>
             
             <div className="nav-actions-wrapper">
-                <Link to="/login" className="login-btn-premium">Login</Link>
+                {user ? (
+                    <>
+                        <Link 
+                            to={`/${user.role}-dashboard`} 
+                            className="login-btn-premium"
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                        >
+                            <LayoutDashboard size={15} /> Dashboard
+                        </Link>
+                        <button
+                            onClick={() => { logout(); navigate('/'); }}
+                            className="nav-theme-toggle"
+                            title="Logout"
+                            style={{ color: 'var(--secondary)' }}
+                        >
+                            <LogOut size={16} />
+                        </button>
+                    </>
+                ) : (
+                    <Link to="/login" className="login-btn-premium">Login</Link>
+                )}
                 <button 
                     onClick={() => setIsDark(!isDark)} 
                     className="nav-theme-toggle"
@@ -155,7 +177,14 @@ const Navbar = () => {
                             </Link>
                         )
                     ))}
-                    <Link to="/login" className="mobile-login-btn">Login Portal</Link>
+                    {user ? (
+                        <>
+                            <Link to={`/${user.role}-dashboard`} className="mobile-login-btn">Dashboard</Link>
+                            <button onClick={() => { logout(); navigate('/'); setMenuOpen(false); }} className="mobile-login-btn" style={{ background: 'var(--secondary)', border: 'none', cursor: 'pointer', width: '100%', marginTop: '0.3rem' }}>Logout</button>
+                        </>
+                    ) : (
+                        <Link to="/login" className="mobile-login-btn">Login Portal</Link>
+                    )}
                 </div>
             )}
 
